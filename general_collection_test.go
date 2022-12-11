@@ -1,8 +1,10 @@
 package handyCollection
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestGeneralCollection_AddWithKey(t *testing.T) {
@@ -13,6 +15,7 @@ func TestGeneralCollection_AddWithKey(t *testing.T) {
 	assert.Equal(t, 1, actual)
 	assert.True(t, found)
 
+	c.AsSlice()
 	c.AddWithKey(11, "1")
 	actual, found = c.FindByKey("1")
 	assert.Equal(t, 11, actual)
@@ -40,6 +43,7 @@ func TestGeneralCollection_MergeSlices(t *testing.T) {
 
 func TestGeneralCollection_MergeMaps(t *testing.T) {
 	c1 := NewGeneralCollection[string]().
+		Add("0").
 		AddWithKey("1", "1").
 		AddWithKey("2", "2").
 		AddWithKey("3", "3").
@@ -48,7 +52,7 @@ func TestGeneralCollection_MergeMaps(t *testing.T) {
 			"2": "22",
 			"4": "33",
 		})
-	assert.Equal(t, []string{"11", "22", "3", "33"}, c1.AsSlice())
+	assert.Equal(t, []string{"0", "11", "22", "3", "33"}, c1.AsSlice())
 }
 
 func TestGeneralCollection_FindByIndex(t *testing.T) {
@@ -155,9 +159,11 @@ func TestGeneralCollection_RemoveByKey(t *testing.T) {
 func TestGeneralCollection_Pop(t *testing.T) {
 	c := NewGeneralCollection[string]().Add("11", "22", "33")
 
+	c.AsSlice()
 	actual, found := c.Pop()
 	assert.Equal(t, "33", actual)
 	assert.True(t, found)
+	assert.Equal(t, []string{"11", "22"}, c.AsSlice())
 
 	actual, found = c.Pop()
 	assert.Equal(t, "22", actual)
@@ -175,9 +181,11 @@ func TestGeneralCollection_Pop(t *testing.T) {
 func TestGeneralCollection_Shift(t *testing.T) {
 	c := NewGeneralCollection[string]().Add("11", "22", "33")
 
+	c.AsSlice()
 	actual, found := c.Shift()
 	assert.Equal(t, "11", actual)
 	assert.True(t, found)
+	assert.Equal(t, []string{"22", "33"}, c.AsSlice())
 
 	actual, found = c.Shift()
 	assert.Equal(t, "22", actual)
@@ -215,7 +223,16 @@ func TestGeneralCollection_FilterCount(t *testing.T) {
 }
 
 func TestGeneralCollection_GroupCount(t *testing.T) {
-	// TODO
+	c := NewGeneralCollection[string]().Add("2022-01-01", "2020-01-01", "2022-12-12", "2019-01-01")
+	groups := c.GroupCount(func(item string, _ int, _ string) string {
+		t, _ := time.Parse("2006-01-02", item)
+		return fmt.Sprintf("%d", t.Year())
+	})
+
+	assert.Equal(t, 1, groups["2019"])
+	assert.Equal(t, 1, groups["2020"])
+	assert.Equal(t, 2, groups["2022"])
+	assert.Equal(t, 0, groups["2023"])
 }
 
 func TestGeneralCollection_ForEach(t *testing.T) {
@@ -308,6 +325,13 @@ func TestGeneralCollection_SortBy(t *testing.T) {
 	assert.NotEqual(t, c1, c2)
 	assert.Equal(t, []string{"a", "aa", "aaa", "aaaa"}, c1.AsSlice())
 	assert.Equal(t, []string{"aaaa", "aaa", "aa", "a"}, c2.AsSlice())
+}
+
+func TestGeneralCollection_Shuffle(t *testing.T) {
+	c1 := NewGeneralCollection[int]().Add(1)
+	c2 := c1.Shuffle()
+
+	assert.NotEqual(t, c1, c2)
 }
 
 func TestGeneralCollection_SelfSortBy(t *testing.T) {
