@@ -42,8 +42,7 @@ func TestGeneralCollection_MergeSlices(t *testing.T) {
 }
 
 func TestGeneralCollection_MergeMaps(t *testing.T) {
-	c1 := NewGeneralCollection[string]().
-		Add("0").
+	c := NewGeneralCollection[string]().
 		AddWithKey("1", "1").
 		AddWithKey("2", "2").
 		AddWithKey("3", "3").
@@ -52,7 +51,19 @@ func TestGeneralCollection_MergeMaps(t *testing.T) {
 			"2": "22",
 			"4": "33",
 		})
-	assert.Equal(t, []string{"0", "11", "22", "3", "33"}, c1.AsSlice())
+	assert.Equal(t, []string{"11", "22", "3", "33"}, c.AsSlice())
+	actual, found := c.FindByKey("4")
+	assert.Equal(t, "33", actual)
+	assert.True(t, found)
+
+	c.MergeMaps(false, map[string]string{
+		"5": "55",
+		"6": "66",
+	})
+	assert.Equal(t, []string{"11", "22", "3", "33", "55", "66"}, c.AsSlice())
+	_, found = c.FindByKey("5")
+	assert.False(t, found)
+
 }
 
 func TestGeneralCollection_FindByIndex(t *testing.T) {
@@ -157,13 +168,16 @@ func TestGeneralCollection_RemoveByKey(t *testing.T) {
 }
 
 func TestGeneralCollection_Pop(t *testing.T) {
-	c := NewGeneralCollection[string]().Add("11", "22", "33")
+	c := NewGeneralCollection[string]().Add("11", "22").AddWithKey("33", "3")
 
-	c.AsSlice()
+	idx, _ := c.IndexByKey("3")
+	assert.Equal(t, 2, idx)
 	actual, found := c.Pop()
 	assert.Equal(t, "33", actual)
 	assert.True(t, found)
 	assert.Equal(t, []string{"11", "22"}, c.AsSlice())
+	_, found = c.IndexByKey("3")
+	assert.False(t, found)
 
 	actual, found = c.Pop()
 	assert.Equal(t, "22", actual)
@@ -317,21 +331,21 @@ func TestGeneralCollection_SelfFilterBy(t *testing.T) {
 }
 
 func TestGeneralCollection_SortBy(t *testing.T) {
-	c1 := NewGeneralCollection[string]().Add("a", "aa", "aaa", "aaaa")
+	c1 := NewGeneralCollection[string]().Add("a", "aa", "aaa", "aaaa").AddWithKey("aaaaa", "5a")
 	c2 := c1.SortBy(func(a string, b string) bool {
 		return len(a) > len(b)
 	})
 
 	assert.NotEqual(t, c1, c2)
-	assert.Equal(t, []string{"a", "aa", "aaa", "aaaa"}, c1.AsSlice())
-	assert.Equal(t, []string{"aaaa", "aaa", "aa", "a"}, c2.AsSlice())
-}
+	assert.Equal(t, []string{"a", "aa", "aaa", "aaaa", "aaaaa"}, c1.AsSlice())
+	assert.Equal(t, []string{"aaaaa", "aaaa", "aaa", "aa", "a"}, c2.AsSlice())
 
-func TestGeneralCollection_Shuffle(t *testing.T) {
-	c1 := NewGeneralCollection[int]().Add(1)
-	c2 := c1.Shuffle()
+	actual, _ := c2.FindByKey("5a")
+	assert.Equal(t, "aaaaa", actual)
 
-	assert.NotEqual(t, c1, c2)
+	idx, found := c2.IndexByKey("5a")
+	assert.Equal(t, 0, idx)
+	assert.True(t, found)
 }
 
 func TestGeneralCollection_SelfSortBy(t *testing.T) {
@@ -340,6 +354,13 @@ func TestGeneralCollection_SelfSortBy(t *testing.T) {
 		return i > j
 	})
 	assert.Equal(t, []int{900, 800, 700, 600, 500, 400, 300, 200, 100}, c.AsSlice())
+}
+
+func TestGeneralCollection_Shuffle(t *testing.T) {
+	c1 := NewGeneralCollection[int]().Add(1)
+	c2 := c1.Shuffle()
+
+	assert.NotEqual(t, c1, c2)
 }
 
 func TestGeneralCollection_actualIndex(t *testing.T) {
