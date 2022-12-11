@@ -237,15 +237,15 @@ func TestGeneralCollection_FilterCount(t *testing.T) {
 
 func TestGeneralCollection_GroupCount(t *testing.T) {
 	c := NewGeneralCollection[string]().Add("2022-01-01", "2020-01-01", "2022-12-12", "2019-01-01")
-	groups := c.GroupCount(func(item string, _ int, _ string) string {
+	g := c.GroupCount(func(item string, _ int, _ string) string {
 		t, _ := time.Parse("2006-01-02", item)
 		return fmt.Sprintf("%d", t.Year())
-	})
+	}).AsMap()
 
-	assert.Equal(t, 1, groups["2019"])
-	assert.Equal(t, 1, groups["2020"])
-	assert.Equal(t, 2, groups["2022"])
-	assert.Equal(t, 0, groups["2023"])
+	assert.Equal(t, 1, g["2019"])
+	assert.Equal(t, 1, g["2020"])
+	assert.Equal(t, 2, g["2022"])
+	assert.Equal(t, 0, g["2023"])
 }
 
 func TestGeneralCollection_ForEach(t *testing.T) {

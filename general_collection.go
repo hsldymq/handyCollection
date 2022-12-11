@@ -224,15 +224,15 @@ func (c *GeneralCollection[T]) FilterCount(filter func(item T, idx int, key stri
 }
 
 // GroupCount 根据给定的分组逻辑，计算出每个分组中数据项的数量, 拆分后的组的键由参数中的分组逻辑提供
-func (c *GeneralCollection[T]) GroupCount(grouper func(item T, idx int, key string) string) map[string]int {
-	result := map[string]int{}
+func (c *GeneralCollection[T]) GroupCount(grouper func(item T, idx int, key string) string) *Group[int] {
+	g := NewGroup[int]()
 	for idx, key := range c.orderedKeys {
 		item := c.items[key]
-
 		groupKey := grouper(item, idx, key)
-		result[groupKey] += 1
+		count, _ := g.Find(groupKey)
+		g.Set(groupKey, count+1)
 	}
-	return result
+	return g
 }
 
 // ForEach iterates over items and invokes iteratee for each item
