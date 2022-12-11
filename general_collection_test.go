@@ -58,9 +58,8 @@ func TestGeneralCollection_MergeMaps(t *testing.T) {
 
 	c.MergeMaps(false, map[string]string{
 		"5": "55",
-		"6": "66",
 	})
-	assert.Equal(t, []string{"11", "22", "3", "33", "55", "66"}, c.AsSlice())
+	assert.Equal(t, []string{"11", "22", "3", "33", "55"}, c.AsSlice())
 	_, found = c.FindByKey("5")
 	assert.False(t, found)
 
