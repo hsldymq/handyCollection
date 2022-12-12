@@ -6,19 +6,24 @@ import (
 	"strings"
 )
 
+// 使用方可以替换该方法以获得更高校的marshal 与 unmarshal性能
 var (
 	JSONMarshalFunc   = json.Marshal
 	JSONUnmarshalFunc = json.Unmarshal
 )
 
+// JSONMarshalAsObject 将集合序列化为json对象
 func JSONMarshalAsObject[T any](c *GeneralCollection[T]) ([]byte, error) {
 	return JSONMarshalFunc(c.items)
 }
 
+// JSONMarshalAsArray 将集合序列化为json数组
 func JSONMarshalAsArray[T any](c *GeneralCollection[T]) ([]byte, error) {
 	return JSONMarshalFunc(c.AsSlice())
 }
 
+// JSONUnmarshal 将json数据unmarshal后存入集合中
+// 支持json数组和对象两种类型，如果是对象，那么对象的key会作为集合中数据项的key
 func JSONUnmarshal[T any](data []byte, c *GeneralCollection[T], keepOriginalItems bool) error {
 	d := strings.TrimSpace(string(data))
 	if d[0] == '[' {
