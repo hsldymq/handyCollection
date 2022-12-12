@@ -12,7 +12,7 @@ func NewGroup[T any]() *Group[T] {
 	}
 }
 
-func GroupCollectionBy[T any](c *GeneralCollection[T], grouper func(item T, idx int, key string) string) *Group[*GeneralCollection[T]] {
+func NewCollectionGroup[T any](c *GeneralCollection[T], grouper func(item T, idx int, key string) string) *Group[*GeneralCollection[T]] {
 	g := NewGroup[*GeneralCollection[T]]()
 	for idx, key := range c.orderedKeys {
 		item := c.items[key]

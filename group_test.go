@@ -7,14 +7,14 @@ import (
 	"time"
 )
 
-func TestGroupCollectionBy(t *testing.T) {
+func TestNewCollectionGroup(t *testing.T) {
 	c := NewGeneralCollection[int]().
 		Add(1, 2, 3).
 		AddWithKey(11, "11").
 		AddWithKey(12, "12").
 		AddWithKey(13, "13").
 		Add(21, 22, 23)
-	group := GroupCollectionBy(c, func(item int, _ int, _ string) string {
+	group := NewCollectionGroup(c, func(item int, _ int, _ string) string {
 		return fmt.Sprintf("%d", item/10)
 	})
 
