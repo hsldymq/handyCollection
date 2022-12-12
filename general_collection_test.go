@@ -291,12 +291,12 @@ func TestGeneralCollection_Some(t *testing.T) {
 	}))
 }
 
-func TestGeneralCollection_FilterBy(t *testing.T) {
+func TestGeneralCollection_Filter(t *testing.T) {
 	c1 := NewGeneralCollection[int]().
 		Add(1, 2, 3, 4, 5, 6).
 		AddWithKey(7, "7").
 		AddWithKey(8, "8")
-	c2 := c1.FilterBy(func(item int, _ int, _ string) bool {
+	c2 := c1.Filter(func(item int, _ int, _ string) bool {
 		return item%2 == 0
 	})
 	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8}, c1.AsSlice())
@@ -316,22 +316,12 @@ func TestGeneralCollection_FilterBy(t *testing.T) {
 	assert.True(t, found)
 }
 
-func BenchmarkGeneralCollection_SelfFilterBy(b *testing.B) {
-	c := NewGeneralCollection[int]()
-	for i := 0; i < b.N; i++ {
-		c.Add(i)
-	}
-	c.SelfFilterBy(func(item int, _ int, _ string) bool {
-		return item%2 == 0
-	})
-}
-
-func TestGeneralCollection_SelfFilterBy(t *testing.T) {
+func TestGeneralCollection_SelfFilter(t *testing.T) {
 	c1 := NewGeneralCollection[int]().
 		Add(1, 2, 3, 4, 5, 6).
 		AddWithKey(7, "7").
 		AddWithKey(8, "8")
-	c2 := c1.SelfFilterBy(func(item int, _ int, _ string) bool {
+	c2 := c1.SelfFilter(func(item int, _ int, _ string) bool {
 		return item%2 == 0
 	})
 
@@ -339,9 +329,19 @@ func TestGeneralCollection_SelfFilterBy(t *testing.T) {
 	assert.Equal(t, []int{2, 4, 6, 8}, c1.AsSlice())
 }
 
-func TestGeneralCollection_SortBy(t *testing.T) {
+func BenchmarkGeneralCollection_SelfFilter(b *testing.B) {
+	c := NewGeneralCollection[int]()
+	for i := 0; i < b.N; i++ {
+		c.Add(i)
+	}
+	c.SelfFilter(func(item int, _ int, _ string) bool {
+		return item%2 == 0
+	})
+}
+
+func TestGeneralCollection_Sort(t *testing.T) {
 	c1 := NewGeneralCollection[string]().Add("a", "aa", "aaa", "aaaa").AddWithKey("aaaaa", "5a")
-	c2 := c1.SortBy(func(a string, b string) bool {
+	c2 := c1.Sort(func(a string, b string) bool {
 		return len(a) > len(b)
 	})
 
@@ -357,9 +357,9 @@ func TestGeneralCollection_SortBy(t *testing.T) {
 	assert.True(t, found)
 }
 
-func TestGeneralCollection_SelfSortBy(t *testing.T) {
+func TestGeneralCollection_SelfSort(t *testing.T) {
 	c := NewGeneralCollection[int]().Add(100, 200, 300, 400, 500, 600, 700, 800, 900)
-	c.SelfSortBy(func(i, j int) bool {
+	c.SelfSort(func(i, j int) bool {
 		return i > j
 	})
 	assert.Equal(t, []int{900, 800, 700, 600, 500, 400, 300, 200, 100}, c.AsSlice())
