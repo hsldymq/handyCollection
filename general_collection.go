@@ -221,6 +221,14 @@ func (c *GeneralCollection[T]) AsSlice() []T {
 	return c.sliceCache
 }
 
+func (c *GeneralCollection[T]) AsMap() map[string]T {
+	m := map[string]T{}
+	for key, val := range c.items {
+		m[key] = val
+	}
+	return m
+}
+
 // ForEach iterates over items and invokes iteratee for each item
 func (c *GeneralCollection[T]) ForEach(iteratee func(item T, idx int, key string)) {
 	for idx, key := range c.orderedKeys {

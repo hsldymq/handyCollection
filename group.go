@@ -49,11 +49,7 @@ func (g *Group[T]) AsSlice() []T {
 }
 
 func (g *Group[T]) AsMap() map[string]T {
-	m := map[string]T{}
-	for key, val := range g.c.items {
-		m[key] = val
-	}
-	return m
+	return g.c.AsMap()
 }
 
 func (g *Group[T]) SelfSortBy(less func(iKey string, iVal T, jKey string, jVal T) bool) *Group[T] {
