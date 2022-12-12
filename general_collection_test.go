@@ -316,6 +316,16 @@ func TestGeneralCollection_FilterBy(t *testing.T) {
 	assert.True(t, found)
 }
 
+func BenchmarkGeneralCollection_SelfFilterBy(b *testing.B) {
+	c := NewGeneralCollection[int]()
+	for i := 0; i < b.N; i++ {
+		c.Add(i)
+	}
+	c.SelfFilterBy(func(item int, _ int, _ string) bool {
+		return item%2 == 0
+	})
+}
+
 func TestGeneralCollection_SelfFilterBy(t *testing.T) {
 	c1 := NewGeneralCollection[int]().
 		Add(1, 2, 3, 4, 5, 6).
