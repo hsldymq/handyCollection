@@ -52,7 +52,7 @@ func (g *Group[T]) AsMap() map[string]T {
 	return g.c.AsMap()
 }
 
-func (g *Group[T]) SelfSortBy(less func(iKey string, iVal T, jKey string, jVal T) bool) *Group[T] {
+func (g *Group[T]) SelfSort(less func(iKey string, iVal T, jKey string, jVal T) bool) *Group[T] {
 	sort.Slice(g.c.orderedKeys, func(i, j int) bool {
 		iKey, _ := g.c.KeyByIndex(i)
 		iVal := g.c.items[iKey]

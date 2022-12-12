@@ -45,7 +45,7 @@ func TestGroup_SelfSortBy(t *testing.T) {
 		Set("2018", 18).
 		Set("2020", 20)
 
-	g.SelfSortBy(func(iKey string, _ int, jKey string, _ int) bool {
+	g.SelfSort(func(iKey string, _ int, jKey string, _ int) bool {
 		t1, _ := time.Parse("2006", iKey)
 		t2, _ := time.Parse("2006", jKey)
 		return t1.Year() <= t2.Year()
