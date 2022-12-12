@@ -37,7 +37,7 @@ func TestNewCollectionGroup(t *testing.T) {
 	assert.False(t, found)
 }
 
-func TestGroup_SelfSortBy(t *testing.T) {
+func TestGroup_SelfSort(t *testing.T) {
 	g := NewGroup[int]().
 		Set("2022", 22).
 		Set("2010", 10).
