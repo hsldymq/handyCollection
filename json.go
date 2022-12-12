@@ -24,6 +24,7 @@ func JSONMarshalAsArray[T any](c *GeneralCollection[T]) ([]byte, error) {
 
 // JSONUnmarshal 将json数据unmarshal后存入集合中
 // 支持json数组和对象两种类型，如果是对象，那么对象的key会作为集合中数据项的key
+// 如果参数 keepOriginalItems 为false, 那么集合中的原有数据会被清空
 func JSONUnmarshal[T any](data []byte, c *GeneralCollection[T], keepOriginalItems bool) error {
 	d := strings.TrimSpace(string(data))
 	if d[0] == '[' {
