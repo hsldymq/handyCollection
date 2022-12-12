@@ -13,14 +13,14 @@ func TestJSONMarshalAsArray(t *testing.T) {
 	assert.Equal(t, `["1","2","3","4"]`, string(data))
 }
 
-func TestJSONMarshalAsMap(t *testing.T) {
+func TestJSONMarshalAsObject(t *testing.T) {
 	c := NewGeneralCollection[string]().
 		AddWithKey("11", "1").
 		AddWithKey("22", "2").
 		AddWithKey("33", "3").
 		AddWithKey("44", "4")
 
-	data, err := JSONMarshalAsMap(c)
+	data, err := JSONMarshalAsObject(c)
 	assert.NoError(t, err)
 
 	m := map[string]string{}

@@ -11,7 +11,7 @@ var (
 	JSONUnmarshalFunc = json.Unmarshal
 )
 
-func JSONMarshalAsMap[T any](c *GeneralCollection[T]) ([]byte, error) {
+func JSONMarshalAsObject[T any](c *GeneralCollection[T]) ([]byte, error) {
 	return JSONMarshalFunc(c.items)
 }
 
