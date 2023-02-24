@@ -72,7 +72,6 @@ func (c *GeneralCollection[T]) AddWithKey(item T, key string) *GeneralCollection
 }
 
 // Merge 合并指定的集合的数据到该集合中
-// 被合并的集合中如果数据向关联的key，那么合并后该数据项依旧关联该key, 如果当前集合中已经存在关联此key的数据项, 那么它会被覆盖
 func (c *GeneralCollection[T]) Merge(collections ...*GeneralCollection[T]) *GeneralCollection[T] {
 	for _, each := range collections {
 		for _, key := range each.orderedKeys {
