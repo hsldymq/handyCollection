@@ -228,8 +228,8 @@ func TestGeneralCollection_Count(t *testing.T) {
 
 func TestGeneralCollection_FilterCount(t *testing.T) {
 	c := NewGeneralCollection[int]().Add(1, 2, 3, 4, 5, 6)
-	num := c.FilterCount(func(item int, idx int, key string) bool {
-		return item%2 == 0
+	num := c.FilterCount(func(each *ItemInfo[int]) bool {
+		return each.Item%2 == 0
 	})
 
 	assert.Equal(t, 3, num)
@@ -237,8 +237,8 @@ func TestGeneralCollection_FilterCount(t *testing.T) {
 
 func TestGeneralCollection_GroupCount(t *testing.T) {
 	c := NewGeneralCollection[string]().Add("2022-01-01", "2020-01-01", "2022-12-12", "2019-01-01")
-	g := c.GroupCount(func(item string, _ int, _ string) string {
-		t, _ := time.Parse("2006-01-02", item)
+	g := c.GroupCount(func(each *ItemInfo[string]) string {
+		t, _ := time.Parse("2006-01-02", each.Item)
 		return fmt.Sprintf("%d", t.Year())
 	}).AsMap()
 
@@ -251,8 +251,8 @@ func TestGeneralCollection_GroupCount(t *testing.T) {
 func TestGeneralCollection_ForEach(t *testing.T) {
 	c := NewGeneralCollection[int]().Add(1, 2, 3, 4, 5)
 	sum := 0
-	c.ForEach(func(item int, idx int, key string) {
-		sum += item
+	c.ForEach(func(each *ItemInfo[int]) {
+		sum += each.Item
 	})
 	assert.Equal(t, 15, sum)
 }
@@ -296,8 +296,8 @@ func TestGeneralCollection_Filter(t *testing.T) {
 		Add(1, 2, 3, 4, 5, 6).
 		AddWithKey(7, "7").
 		AddWithKey(8, "8")
-	c2 := c1.Filter(func(item int, _ int, _ string) bool {
-		return item%2 == 0
+	c2 := c1.Filter(func(each *ItemInfo[int]) bool {
+		return each.Item%2 == 0
 	})
 	assert.Equal(t, []int{1, 2, 3, 4, 5, 6, 7, 8}, c1.AsSlice())
 	actual, found := c1.FindByKey("7")
@@ -321,8 +321,8 @@ func TestGeneralCollection_SelfFilter(t *testing.T) {
 		Add(1, 2, 3, 4, 5, 6).
 		AddWithKey(7, "7").
 		AddWithKey(8, "8")
-	c2 := c1.SelfFilter(func(item int, _ int, _ string) bool {
-		return item%2 == 0
+	c2 := c1.SelfFilter(func(each *ItemInfo[int]) bool {
+		return each.Item%2 == 0
 	})
 
 	assert.Equal(t, c1, c2)
@@ -334,8 +334,8 @@ func BenchmarkGeneralCollection_SelfFilter(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		c.Add(i)
 	}
-	c.SelfFilter(func(item int, _ int, _ string) bool {
-		return item%2 == 0
+	c.SelfFilter(func(each *ItemInfo[int]) bool {
+		return each.Item%2 == 0
 	})
 }
 

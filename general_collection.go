@@ -7,6 +7,13 @@ import (
 	"time"
 )
 
+// ItemInfo 遍历Item信息
+type ItemInfo[T any] struct {
+	Item  T
+	Index int
+	Key   string
+}
+
 // GeneralCollection 通用集合
 type GeneralCollection[T any] struct {
 	items             map[string]T
@@ -242,9 +249,13 @@ func (c *GeneralCollection[T]) AsMap() map[string]T {
 }
 
 // ForEach 遍历每一个数据项，并交由给定的函数处理
-func (c *GeneralCollection[T]) ForEach(iteratee func(item T, idx int, key string)) {
+func (c *GeneralCollection[T]) ForEach(iteratee func(each *ItemInfo[T])) {
 	for idx, key := range c.orderedKeys {
-		iteratee(c.items[key], idx, key)
+		iteratee(&ItemInfo[T]{
+			Index: idx,
+			Key:   key,
+			Item:  c.items[key],
+		})
 	}
 }
 
@@ -271,11 +282,14 @@ func (c *GeneralCollection[T]) Some(tester func(item T) bool) bool {
 }
 
 // GroupCount 根据给定的分组逻辑，计算出每个分组中数据项的数量, 拆分后的组的键由参数中的分组逻辑提供
-func (c *GeneralCollection[T]) GroupCount(grouper func(item T, idx int, key string) string) *Group[int] {
+func (c *GeneralCollection[T]) GroupCount(grouper func(each *ItemInfo[T]) string) *Group[int] {
 	g := NewGroup[int]()
 	for idx, key := range c.orderedKeys {
-		item := c.items[key]
-		groupKey := grouper(item, idx, key)
+		groupKey := grouper(&ItemInfo[T]{
+			Index: idx,
+			Key:   key,
+			Item:  c.items[key],
+		})
 		count, _ := g.Find(groupKey)
 		g.Set(groupKey, count+1)
 	}
@@ -283,11 +297,15 @@ func (c *GeneralCollection[T]) GroupCount(grouper func(item T, idx int, key stri
 }
 
 // FilterCount 根据指定的过滤器, 返回符合条件的数据项数量
-func (c *GeneralCollection[T]) FilterCount(filter func(item T, idx int, key string) bool) int {
+func (c *GeneralCollection[T]) FilterCount(filter func(each *ItemInfo[T]) bool) int {
 	count := 0
 	for idx, key := range c.orderedKeys {
-		item := c.items[key]
-		if filter(item, idx, key) {
+		info := &ItemInfo[T]{
+			Index: idx,
+			Key:   key,
+			Item:  c.items[key],
+		}
+		if filter(info) {
 			count += 1
 		}
 	}
@@ -296,11 +314,16 @@ func (c *GeneralCollection[T]) FilterCount(filter func(item T, idx int, key stri
 
 // Filter 使用给定的过滤函数过滤掉数据项, 并返回由剩余数据项组成的集合
 // 该方法不会影响当前集合, 而是返回一个新集合
-func (c *GeneralCollection[T]) Filter(filter func(item T, idx int, key string) bool) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) Filter(filter func(each *ItemInfo[T]) bool) *GeneralCollection[T] {
 	newCollection := NewGeneralCollection[T]()
 	for idx, key := range c.orderedKeys {
 		item := c.items[key]
-		if filter(item, idx, key) {
+		info := &ItemInfo[T]{
+			Index: idx,
+			Key:   key,
+			Item:  item,
+		}
+		if filter(info) {
 			if c.isAutoGenKey(key) {
 				newCollection.Add(item)
 			} else {
@@ -312,7 +335,7 @@ func (c *GeneralCollection[T]) Filter(filter func(item T, idx int, key string) b
 }
 
 // SelfFilter 功能同Filter, 不过过滤掉的是当前集合中的数据项
-func (c *GeneralCollection[T]) SelfFilter(filter func(item T, idx int, key string) bool) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) SelfFilter(filter func(each *ItemInfo[T]) bool) *GeneralCollection[T] {
 	newColl := c.Filter(filter)
 	c.init()
 	c.items = newColl.items

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 使用方可以替换该方法以获得更高校的marshal 与 unmarshal性能
+// 使用方可以替换该方法以获得更高效的marshal 与 unmarshal性能
 var (
 	JSONMarshalFunc   = json.Marshal
 	JSONUnmarshalFunc = json.Unmarshal
@@ -29,7 +29,7 @@ func JSONUnmarshal[T any](data []byte, c *GeneralCollection[T], keepOriginalItem
 	d := strings.TrimSpace(string(data))
 	if d[0] == '[' {
 		l := make([]T, 0)
-		if err := JSONUnmarshalFunc([]byte(d), &l); err != nil {
+		if err := JSONUnmarshalFunc(data, &l); err != nil {
 			return err
 		}
 		if !keepOriginalItems {
@@ -38,7 +38,7 @@ func JSONUnmarshal[T any](data []byte, c *GeneralCollection[T], keepOriginalItem
 		c.Add(l...)
 	} else if d[0] == '{' {
 		m := make(map[string]T)
-		if err := JSONUnmarshalFunc([]byte(d), &m); err != nil {
+		if err := JSONUnmarshalFunc(data, &m); err != nil {
 			return err
 		}
 		if !keepOriginalItems {

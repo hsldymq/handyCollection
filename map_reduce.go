@@ -2,11 +2,11 @@ package handyCollection
 
 func Map[S any, D any](srcCollection *GeneralCollection[S], mapper func(item S) D) *GeneralCollection[D] {
 	distCollection := NewGeneralCollection[D]()
-	srcCollection.ForEach(func(item S, idx int, key string) {
-		if srcCollection.isAutoGenKey(key) {
-			distCollection.Add(mapper(item))
+	srcCollection.ForEach(func(each *ItemInfo[S]) {
+		if srcCollection.isAutoGenKey(each.Key) {
+			distCollection.Add(mapper(each.Item))
 		} else {
-			distCollection.AddWithKey(mapper(item), key)
+			distCollection.AddWithKey(mapper(each.Item), each.Key)
 		}
 	})
 
@@ -15,8 +15,8 @@ func Map[S any, D any](srcCollection *GeneralCollection[S], mapper func(item S) 
 
 func Reduce[S any, D any](collection *GeneralCollection[S], reducer func(item S, carry D) D, init D) D {
 	carry := init
-	collection.ForEach(func(item S, _ int, _ string) {
-		carry = reducer(item, carry)
+	collection.ForEach(func(each *ItemInfo[S]) {
+		carry = reducer(each.Item, carry)
 	})
 
 	return carry
