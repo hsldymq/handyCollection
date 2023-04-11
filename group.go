@@ -42,6 +42,10 @@ func (g *Group[T]) Find(key string) (T, bool) {
 	return g.c.FindByKey(key)
 }
 
+func (g *Group[T]) HasKey(key string) bool {
+	return g.c.HasKey(key)
+}
+
 func (g *Group[T]) Keys() []string {
 	keys := make([]string, 0, g.c.Count())
 	g.c.ForEach(func(each *ItemInfo[T]) {
