@@ -13,19 +13,23 @@ var (
 )
 
 // JSONMarshalAsObject 将集合序列化为json对象
-func JSONMarshalAsObject[T any](c *GeneralCollection[T]) ([]byte, error) {
-	return JSONMarshalFunc(c.items)
+func JSONMarshalAsObject[T any](c Collection[T]) ([]byte, error) {
+	if m, ok := c.(internalMapFetcher[T]); !ok {
+		return JSONMarshalFunc(m)
+	} else {
+		return JSONMarshalFunc(c.AsMap())
+	}
 }
 
 // JSONMarshalAsArray 将集合序列化为json数组
-func JSONMarshalAsArray[T any](c *GeneralCollection[T]) ([]byte, error) {
+func JSONMarshalAsArray[T any](c Collection[T]) ([]byte, error) {
 	return JSONMarshalFunc(c.AsSlice())
 }
 
 // JSONUnmarshal 将json数据unmarshal后存入集合中
 // 支持json数组和对象两种类型，如果是对象，那么对象的key会作为集合中数据项的key
 // 如果参数 keepOriginalItems 为false, 那么集合中的原有数据会被清空
-func JSONUnmarshal[T any](data []byte, c *GeneralCollection[T], keepOriginalItems bool) error {
+func JSONUnmarshal[T any](data []byte, c Collection[T], keepOriginalItems bool) error {
 	d := strings.TrimSpace(string(data))
 	if d[0] == '[' {
 		l := make([]T, 0)

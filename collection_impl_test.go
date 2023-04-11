@@ -7,8 +7,12 @@ import (
 	"time"
 )
 
+func newCollectionForTesting[T any]() Collection[T] {
+	return NewGeneralCollection[T]()
+}
+
 func TestGeneralCollection_AddWithKey(t *testing.T) {
-	c := NewGeneralCollection[int]()
+	c := newCollectionForTesting[int]()
 
 	c.AddWithKey(1, "1")
 	actual, found := c.FindByKey("1")
@@ -26,15 +30,15 @@ func TestGeneralCollection_AddWithKey(t *testing.T) {
 }
 
 func TestGeneralCollection_Merge(t *testing.T) {
-	c1 := NewGeneralCollection[string]().Add("1", "2").AddWithKey("3", "3")
-	c2 := NewGeneralCollection[string]().Add("1", "2").AddWithKey("33", "3")
+	c1 := newCollectionForTesting[string]().Add("1", "2").AddWithKey("3", "3")
+	c2 := newCollectionForTesting[string]().Add("1", "2").AddWithKey("33", "3")
 
 	c1.Merge(c2)
 	assert.Equal(t, []string{"1", "2", "33", "1", "2"}, c1.AsSlice())
 }
 
 func TestGeneralCollection_MergeSlices(t *testing.T) {
-	c := NewGeneralCollection[string]().
+	c := newCollectionForTesting[string]().
 		Add("1", "2", "3").
 		MergeSlices([]string{"a", "b", "c"}, []string{"x", "y", "z"})
 
@@ -42,7 +46,7 @@ func TestGeneralCollection_MergeSlices(t *testing.T) {
 }
 
 func TestGeneralCollection_MergeMaps(t *testing.T) {
-	c := NewGeneralCollection[string]().
+	c := newCollectionForTesting[string]().
 		AddWithKey("1", "1").
 		AddWithKey("2", "2").
 		AddWithKey("3", "3").
@@ -66,7 +70,7 @@ func TestGeneralCollection_MergeMaps(t *testing.T) {
 }
 
 func TestGeneralCollection_FindByIndex(t *testing.T) {
-	c := NewGeneralCollection[string]().Add("1", "2", "3", "4")
+	c := newCollectionForTesting[string]().Add("1", "2", "3", "4")
 
 	actual, found := c.FindByIndex(1)
 	assert.Equal(t, "2", actual)
@@ -82,7 +86,7 @@ func TestGeneralCollection_FindByIndex(t *testing.T) {
 }
 
 func TestGeneralCollection_FindByKey(t *testing.T) {
-	c := NewGeneralCollection[int]().
+	c := newCollectionForTesting[int]().
 		AddWithKey(11, "1").
 		AddWithKey(22, "2")
 
@@ -96,14 +100,14 @@ func TestGeneralCollection_FindByKey(t *testing.T) {
 }
 
 func TestGeneralCollection_HasKey(t *testing.T) {
-	c := NewGeneralCollection[int]().AddWithKey(11, "1")
+	c := newCollectionForTesting[int]().AddWithKey(11, "1")
 
 	assert.True(t, c.HasKey("1"))
 	assert.False(t, c.HasKey("2"))
 }
 
 func TestGeneralCollection_KeyByIndex(t *testing.T) {
-	c := NewGeneralCollection[int]().AddWithKey(11, "1")
+	c := newCollectionForTesting[int]().AddWithKey(11, "1")
 
 	actual, found := c.KeyByIndex(0)
 	assert.Equal(t, "1", actual)
@@ -119,7 +123,7 @@ func TestGeneralCollection_KeyByIndex(t *testing.T) {
 }
 
 func TestGeneralCollection_IndexByKey(t *testing.T) {
-	c := NewGeneralCollection[int]().AddWithKey(11, "1").AddWithKey(22, "2")
+	c := newCollectionForTesting[int]().AddWithKey(11, "1").AddWithKey(22, "2")
 
 	actual, found := c.IndexByKey("2")
 	assert.Equal(t, 1, actual)
@@ -131,7 +135,7 @@ func TestGeneralCollection_IndexByKey(t *testing.T) {
 }
 
 func TestGeneralCollection_RemoveByIndex(t *testing.T) {
-	c := NewGeneralCollection[string]().Add("11", "22", "33", "44", "55")
+	c := newCollectionForTesting[string]().Add("11", "22", "33", "44", "55")
 
 	actual, found := c.RemoveByIndex(4)
 	assert.Equal(t, "55", actual)
@@ -151,7 +155,7 @@ func TestGeneralCollection_RemoveByIndex(t *testing.T) {
 }
 
 func TestGeneralCollection_RemoveByKey(t *testing.T) {
-	c := NewGeneralCollection[string]().
+	c := newCollectionForTesting[string]().
 		AddWithKey("11", "1").
 		AddWithKey("22", "2").
 		AddWithKey("33", "3").
@@ -167,7 +171,7 @@ func TestGeneralCollection_RemoveByKey(t *testing.T) {
 }
 
 func TestGeneralCollection_Pop(t *testing.T) {
-	c := NewGeneralCollection[string]().Add("11", "22").AddWithKey("33", "3")
+	c := newCollectionForTesting[string]().Add("11", "22").AddWithKey("33", "3")
 
 	idx, _ := c.IndexByKey("3")
 	assert.Equal(t, 2, idx)
@@ -192,7 +196,7 @@ func TestGeneralCollection_Pop(t *testing.T) {
 }
 
 func TestGeneralCollection_Shift(t *testing.T) {
-	c := NewGeneralCollection[string]().Add("11", "22", "33")
+	c := newCollectionForTesting[string]().Add("11", "22", "33")
 
 	c.AsSlice()
 	actual, found := c.Shift()
@@ -214,7 +218,7 @@ func TestGeneralCollection_Shift(t *testing.T) {
 }
 
 func TestGeneralCollection_Count(t *testing.T) {
-	c := NewGeneralCollection[int]().Add(1, 2)
+	c := newCollectionForTesting[int]().Add(1, 2)
 	assert.Equal(t, 2, c.Count())
 
 	c.AddWithKey(3, "3")
@@ -227,7 +231,7 @@ func TestGeneralCollection_Count(t *testing.T) {
 }
 
 func TestGeneralCollection_FilterCount(t *testing.T) {
-	c := NewGeneralCollection[int]().Add(1, 2, 3, 4, 5, 6)
+	c := newCollectionForTesting[int]().Add(1, 2, 3, 4, 5, 6)
 	num := c.FilterCount(func(each *ItemInfo[int]) bool {
 		return each.Item%2 == 0
 	})
@@ -236,7 +240,7 @@ func TestGeneralCollection_FilterCount(t *testing.T) {
 }
 
 func TestGeneralCollection_GroupCount(t *testing.T) {
-	c := NewGeneralCollection[string]().Add("2022-01-01", "2020-01-01", "2022-12-12", "2019-01-01")
+	c := newCollectionForTesting[string]().Add("2022-01-01", "2020-01-01", "2022-12-12", "2019-01-01")
 	g := c.GroupCount(func(each *ItemInfo[string]) string {
 		t, _ := time.Parse("2006-01-02", each.Item)
 		return fmt.Sprintf("%d", t.Year())
@@ -249,7 +253,7 @@ func TestGeneralCollection_GroupCount(t *testing.T) {
 }
 
 func TestGeneralCollection_ForEach(t *testing.T) {
-	c := NewGeneralCollection[int]().Add(1, 2, 3, 4, 5)
+	c := newCollectionForTesting[int]().Add(1, 2, 3, 4, 5)
 	sum := 0
 	c.ForEach(func(each *ItemInfo[int]) {
 		sum += each.Item
@@ -258,41 +262,41 @@ func TestGeneralCollection_ForEach(t *testing.T) {
 }
 
 func TestGeneralCollection_Every(t *testing.T) {
-	c1 := NewGeneralCollection[int]().Add(1, 2, 3, 4, 5)
+	c1 := newCollectionForTesting[int]().Add(1, 2, 3, 4, 5)
 	assert.True(t, c1.Every(func(item int) bool {
 		return item > 0
 	}))
 
-	c2 := NewGeneralCollection[int]().Add(1, 2, -1, 4, 5)
+	c2 := newCollectionForTesting[int]().Add(1, 2, -1, 4, 5)
 	assert.False(t, c2.Every(func(item int) bool {
 		return item > 0
 	}))
 
-	c3 := NewGeneralCollection[int]()
+	c3 := newCollectionForTesting[int]()
 	assert.True(t, c3.Every(func(item int) bool {
 		return item > 0
 	}))
 }
 
 func TestGeneralCollection_Some(t *testing.T) {
-	c1 := NewGeneralCollection[int]().Add(-1, 2, -3, -4, -5)
+	c1 := newCollectionForTesting[int]().Add(-1, 2, -3, -4, -5)
 	assert.True(t, c1.Some(func(item int) bool {
 		return item > 0
 	}))
 
-	c2 := NewGeneralCollection[int]().Add(-1, -2, -3, -4, -5)
+	c2 := newCollectionForTesting[int]().Add(-1, -2, -3, -4, -5)
 	assert.False(t, c2.Some(func(item int) bool {
 		return item > 0
 	}))
 
-	c3 := NewGeneralCollection[int]()
+	c3 := newCollectionForTesting[int]()
 	assert.False(t, c3.Some(func(item int) bool {
 		return item > 0
 	}))
 }
 
 func TestGeneralCollection_Filter(t *testing.T) {
-	c1 := NewGeneralCollection[int]().
+	c1 := newCollectionForTesting[int]().
 		Add(1, 2, 3, 4, 5, 6).
 		AddWithKey(7, "7").
 		AddWithKey(8, "8")
@@ -317,7 +321,7 @@ func TestGeneralCollection_Filter(t *testing.T) {
 }
 
 func TestGeneralCollection_SelfFilter(t *testing.T) {
-	c1 := NewGeneralCollection[int]().
+	c1 := newCollectionForTesting[int]().
 		Add(1, 2, 3, 4, 5, 6).
 		AddWithKey(7, "7").
 		AddWithKey(8, "8")
@@ -330,7 +334,7 @@ func TestGeneralCollection_SelfFilter(t *testing.T) {
 }
 
 func BenchmarkGeneralCollection_SelfFilter(b *testing.B) {
-	c := NewGeneralCollection[int]()
+	c := newCollectionForTesting[int]()
 	for i := 0; i < b.N; i++ {
 		c.Add(i)
 	}
@@ -340,9 +344,9 @@ func BenchmarkGeneralCollection_SelfFilter(b *testing.B) {
 }
 
 func TestGeneralCollection_Sort(t *testing.T) {
-	c1 := NewGeneralCollection[string]().Add("a", "aa", "aaa", "aaaa").AddWithKey("aaaaa", "5a")
-	c2 := c1.Sort(func(a string, b string) bool {
-		return len(a) > len(b)
+	c1 := newCollectionForTesting[string]().Add("a", "aa", "aaa", "aaaa").AddWithKey("aaaaa", "5a")
+	c2 := c1.Sort(func(a *ItemInfo[string], b *ItemInfo[string]) bool {
+		return len(a.Item) > len(b.Item)
 	})
 
 	assert.NotEqual(t, c1, c2)
@@ -358,22 +362,23 @@ func TestGeneralCollection_Sort(t *testing.T) {
 }
 
 func TestGeneralCollection_SelfSort(t *testing.T) {
-	c := NewGeneralCollection[int]().Add(100, 200, 300, 400, 500, 600, 700, 800, 900)
-	c.SelfSort(func(i, j int) bool {
-		return i > j
+	c := newCollectionForTesting[int]().Add(100, 200, 300, 400, 500, 600, 700, 800, 900)
+	c.SelfSort(func(i, j *ItemInfo[int]) bool {
+		return i.Item > j.Item
 	})
 	assert.Equal(t, []int{900, 800, 700, 600, 500, 400, 300, 200, 100}, c.AsSlice())
 }
 
 func TestGeneralCollection_Shuffle(t *testing.T) {
-	c1 := NewGeneralCollection[int]().Add(1)
+	c1 := newCollectionForTesting[int]().Add(1)
 	c2 := c1.Shuffle()
 
 	assert.NotEqual(t, c1, c2)
 }
 
 func TestGeneralCollection_actualIndex(t *testing.T) {
-	c := NewGeneralCollection[int]().Add(1, 2)
+	c := NewGeneralCollection[int]()
+	c.Add(1, 2)
 
 	idx, valid := c.actualIndex(1)
 	assert.Equal(t, 1, idx)

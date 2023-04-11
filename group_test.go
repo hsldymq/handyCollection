@@ -14,8 +14,8 @@ func TestNewCollectionGroup(t *testing.T) {
 		AddWithKey(12, "12").
 		AddWithKey(13, "13").
 		Add(21, 22, 23)
-	group := NewCollectionGroup(c, func(item int, _ int, _ string) string {
-		return fmt.Sprintf("%d", item/10)
+	group := GroupCollection(c, func(info *ItemInfo[int]) string {
+		return fmt.Sprintf("%d", info.Item/10)
 	})
 
 	c1, _ := group.Find("0")
@@ -45,16 +45,12 @@ func TestGroup_SelfSort(t *testing.T) {
 		Set("2018", 18).
 		Set("2020", 20)
 
-	g.SelfSort(func(iKey string, _ int, jKey string, _ int) bool {
-		t1, _ := time.Parse("2006", iKey)
-		t2, _ := time.Parse("2006", jKey)
+	g.SelfSort(func(i, j *GroupItemInfo[int]) bool {
+		t1, _ := time.Parse("2006", i.Key)
+		t2, _ := time.Parse("2006", j.Key)
 		return t1.Year() <= t2.Year()
 	})
 
-	s := g.AsSlice()
-	assert.Equal(t, []int{10, 18, 19, 20, 22}, s)
-	for idx, val := range s {
-		key, _ := g.KeyByIndex(idx)
-		assert.Equal(t, fmt.Sprintf("20%d", val), key)
-	}
+	assert.Equal(t, []int{10, 18, 19, 20, 22}, g.AsSlice())
+	assert.Equal(t, []string{"2010", "2018", "2019", "2020", "2022"}, g.Keys())
 }

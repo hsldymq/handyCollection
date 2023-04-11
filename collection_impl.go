@@ -7,13 +7,6 @@ import (
 	"time"
 )
 
-// ItemInfo 遍历Item信息
-type ItemInfo[T any] struct {
-	Item  T
-	Index int
-	Key   string
-}
-
 // GeneralCollection 通用集合
 type GeneralCollection[T any] struct {
 	items             map[string]T
@@ -42,7 +35,7 @@ func (c *GeneralCollection[T]) init() {
 }
 
 // Add 向集合中新增数据
-func (c *GeneralCollection[T]) Add(items ...T) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) Add(items ...T) Collection[T] {
 	for _, each := range items {
 		key := c.genKey()
 		c.items[key] = each
@@ -56,7 +49,7 @@ func (c *GeneralCollection[T]) Add(items ...T) *GeneralCollection[T] {
 
 // AddWithKey 向集合中新增数据，并与一个key关联,后续的操作中可以通过这个key获取到数据本身
 // 如果集合中已经有数据关联了相同的key, 则会覆盖原有数据, 并保持数据所在的次序
-func (c *GeneralCollection[T]) AddWithKey(item T, key string) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) AddWithKey(item T, key string) Collection[T] {
 	_, hasKey := c.items[key]
 	c.items[key] = item
 	if !hasKey {
@@ -72,22 +65,21 @@ func (c *GeneralCollection[T]) AddWithKey(item T, key string) *GeneralCollection
 }
 
 // Merge 合并指定的集合的数据到该集合中
-func (c *GeneralCollection[T]) Merge(collections ...*GeneralCollection[T]) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) Merge(collections ...Collection[T]) Collection[T] {
 	for _, each := range collections {
-		for _, key := range each.orderedKeys {
-			item := each.items[key]
-			if each.isAutoGenKey(key) {
-				c.Add(item)
+		each.ForEach(func(info *ItemInfo[T]) {
+			if info.IsAutoGenKey {
+				c.Add(info.Item)
 			} else {
-				c.AddWithKey(item, key)
+				c.AddWithKey(info.Item, info.Key)
 			}
-		}
+		})
 	}
 	return c
 }
 
 // MergeSlices 合并slice中的数据到该集合中
-func (c *GeneralCollection[T]) MergeSlices(slices ...[]T) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) MergeSlices(slices ...[]T) Collection[T] {
 	for _, each := range slices {
 		for _, item := range each {
 			c.Add(item)
@@ -98,7 +90,7 @@ func (c *GeneralCollection[T]) MergeSlices(slices ...[]T) *GeneralCollection[T] 
 
 // MergeMaps 合并map中的数据到该集合中
 // keepKeys为true时, map的key会作为集合搜索键的key
-func (c *GeneralCollection[T]) MergeMaps(keepKeys bool, maps ...map[string]T) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) MergeMaps(keepKeys bool, maps ...map[string]T) Collection[T] {
 	for _, each := range maps {
 		for key, item := range each {
 			if keepKeys {
@@ -108,11 +100,12 @@ func (c *GeneralCollection[T]) MergeMaps(keepKeys bool, maps ...map[string]T) *G
 			}
 		}
 	}
+
 	return c
 }
 
 // Clear 清空集合数据
-func (c *GeneralCollection[T]) Clear() *GeneralCollection[T] {
+func (c *GeneralCollection[T]) Clear() Collection[T] {
 	c.init()
 	return c
 }
@@ -249,12 +242,8 @@ func (c *GeneralCollection[T]) AsMap() map[string]T {
 
 // ForEach 遍历每一个数据项，并交由给定的函数处理
 func (c *GeneralCollection[T]) ForEach(iteratee func(each *ItemInfo[T])) {
-	for idx, key := range c.orderedKeys {
-		iteratee(&ItemInfo[T]{
-			Index: idx,
-			Key:   key,
-			Item:  c.items[key],
-		})
+	for idx := range c.orderedKeys {
+		iteratee(c.makeItemInfo(idx))
 	}
 }
 
@@ -283,12 +272,8 @@ func (c *GeneralCollection[T]) Some(tester func(item T) bool) bool {
 // GroupCount 根据给定的分组逻辑，计算出每个分组中数据项的数量, 拆分后的组的键由参数中的分组逻辑提供
 func (c *GeneralCollection[T]) GroupCount(grouper func(each *ItemInfo[T]) string) *Group[int] {
 	g := NewGroup[int]()
-	for idx, key := range c.orderedKeys {
-		groupKey := grouper(&ItemInfo[T]{
-			Index: idx,
-			Key:   key,
-			Item:  c.items[key],
-		})
+	for idx := range c.orderedKeys {
+		groupKey := grouper(c.makeItemInfo(idx))
 		count, _ := g.Find(groupKey)
 		g.Set(groupKey, count+1)
 	}
@@ -298,12 +283,8 @@ func (c *GeneralCollection[T]) GroupCount(grouper func(each *ItemInfo[T]) string
 // FilterCount 根据指定的过滤器, 返回符合条件的数据项数量
 func (c *GeneralCollection[T]) FilterCount(filter func(each *ItemInfo[T]) bool) int {
 	count := 0
-	for idx, key := range c.orderedKeys {
-		info := &ItemInfo[T]{
-			Index: idx,
-			Key:   key,
-			Item:  c.items[key],
-		}
+	for idx := range c.orderedKeys {
+		info := c.makeItemInfo(idx)
 		if filter(info) {
 			count += 1
 		}
@@ -313,29 +294,13 @@ func (c *GeneralCollection[T]) FilterCount(filter func(each *ItemInfo[T]) bool) 
 
 // Filter 使用给定的过滤函数过滤掉数据项, 并返回由剩余数据项组成的集合
 // 该方法不会影响当前集合, 而是返回一个新集合
-func (c *GeneralCollection[T]) Filter(filter func(each *ItemInfo[T]) bool) *GeneralCollection[T] {
-	newCollection := NewGeneralCollection[T]()
-	for idx, key := range c.orderedKeys {
-		item := c.items[key]
-		info := &ItemInfo[T]{
-			Index: idx,
-			Key:   key,
-			Item:  item,
-		}
-		if filter(info) {
-			if c.isAutoGenKey(key) {
-				newCollection.Add(item)
-			} else {
-				newCollection.AddWithKey(item, key)
-			}
-		}
-	}
-	return newCollection
+func (c *GeneralCollection[T]) Filter(filter func(each *ItemInfo[T]) bool) Collection[T] {
+	return c.doFilter(filter)
 }
 
 // SelfFilter 功能同Filter, 不过过滤掉的是当前集合中的数据项
-func (c *GeneralCollection[T]) SelfFilter(filter func(each *ItemInfo[T]) bool) *GeneralCollection[T] {
-	newColl := c.Filter(filter)
+func (c *GeneralCollection[T]) SelfFilter(filter func(each *ItemInfo[T]) bool) Collection[T] {
+	newColl := c.doFilter(filter)
 	c.init()
 	c.items = newColl.items
 	c.orderedKeys = newColl.orderedKeys
@@ -345,15 +310,15 @@ func (c *GeneralCollection[T]) SelfFilter(filter func(each *ItemInfo[T]) bool) *
 
 // Sort 排序, 并返回排序后的集合
 // 该方法不会影响当前集合, 而是会新生成一个排序后的集合
-func (c *GeneralCollection[T]) Sort(less func(a T, b T) bool) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) Sort(less func(a *ItemInfo[T], b *ItemInfo[T]) bool) Collection[T] {
 	collection := c.clone()
 	return collection.SelfSort(less)
 }
 
 // SelfSort 同Sort, 不过对当前集合进行排序
-func (c *GeneralCollection[T]) SelfSort(less func(a T, b T) bool) *GeneralCollection[T] {
+func (c *GeneralCollection[T]) SelfSort(less func(a *ItemInfo[T], b *ItemInfo[T]) bool) Collection[T] {
 	sort.Slice(c.orderedKeys, func(i, j int) bool {
-		return less(c.items[c.orderedKeys[i]], c.items[c.orderedKeys[j]])
+		return less(c.makeItemInfo(i), c.makeItemInfo(j))
 	})
 	c.clearKeysIndex()
 	c.clearSliceCache()
@@ -362,13 +327,13 @@ func (c *GeneralCollection[T]) SelfSort(less func(a T, b T) bool) *GeneralCollec
 
 // Shuffle 打乱集合顺序, 并返回打乱顺序后的新集合
 // 该方法不会影响当前集合, 而是会新生成一个打乱顺序的集合
-func (c *GeneralCollection[T]) Shuffle() *GeneralCollection[T] {
+func (c *GeneralCollection[T]) Shuffle() Collection[T] {
 	collection := c.clone()
 	return collection.SelfShuffle()
 }
 
 // SelfShuffle 同Shuffle, 不过打乱的是当前集合的顺序
-func (c *GeneralCollection[T]) SelfShuffle() *GeneralCollection[T] {
+func (c *GeneralCollection[T]) SelfShuffle() Collection[T] {
 	count := c.Count()
 	if count < 2 {
 		return c
@@ -383,6 +348,21 @@ func (c *GeneralCollection[T]) SelfShuffle() *GeneralCollection[T] {
 	}
 	c.clearSliceCache()
 	return c
+}
+
+func (c *GeneralCollection[T]) doFilter(filter func(each *ItemInfo[T]) bool) *GeneralCollection[T] {
+	newCollection := NewGeneralCollection[T]()
+	for idx := range c.orderedKeys {
+		info := c.makeItemInfo(idx)
+		if filter(info) {
+			if info.IsAutoGenKey {
+				newCollection.Add(info.Item)
+			} else {
+				newCollection.AddWithKey(info.Item, info.Key)
+			}
+		}
+	}
+	return newCollection
 }
 
 func (c *GeneralCollection[T]) actualIndex(idx int) (int, bool) {
@@ -442,6 +422,16 @@ func (c *GeneralCollection[T]) clearSliceCache() {
 	c.sliceCache = nil
 }
 
+func (c *GeneralCollection[T]) makeItemInfo(idx int) *ItemInfo[T] {
+	key := c.orderedKeys[idx]
+	return &ItemInfo[T]{
+		Index:        idx,
+		Key:          key,
+		Item:         c.items[key],
+		IsAutoGenKey: c.isAutoGenKey(key),
+	}
+}
+
 func (c *GeneralCollection[T]) isAutoGenKey(key string) bool {
 	_, ok := c.autoGeneratedKeys[key]
 	return ok
@@ -454,4 +444,12 @@ func (c *GeneralCollection[T]) genKey() string {
 			return key
 		}
 	}
+}
+
+type internalMapFetcher[T any] interface {
+	getMap() map[string]T
+}
+
+func (c *GeneralCollection[T]) getMap() map[string]T {
+	return c.items
 }

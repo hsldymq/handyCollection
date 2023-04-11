@@ -1,9 +1,12 @@
 package handyCollection
 
-import "sort"
+type GroupItemInfo[T any] struct {
+	Key  string
+	Item T
+}
 
 type Group[T any] struct {
-	c *GeneralCollection[T]
+	c Collection[T]
 }
 
 func NewGroup[T any]() *Group[T] {
@@ -12,22 +15,21 @@ func NewGroup[T any]() *Group[T] {
 	}
 }
 
-func NewCollectionGroup[T any](c *GeneralCollection[T], grouper func(item T, idx int, key string) string) *Group[*GeneralCollection[T]] {
-	g := NewGroup[*GeneralCollection[T]]()
-	for idx, key := range c.orderedKeys {
-		item := c.items[key]
-		groupKey := grouper(item, idx, key)
+func GroupCollection[T any](c Collection[T], grouper func(*ItemInfo[T]) string) *Group[Collection[T]] {
+	g := NewGroup[Collection[T]]()
+	c.ForEach(func(info *ItemInfo[T]) {
+		groupKey := grouper(info)
 		collection, found := g.Find(groupKey)
 		if !found {
 			collection = NewGeneralCollection[T]()
 			g.Set(groupKey, collection)
 		}
-		if c.isAutoGenKey(key) {
-			collection.Add(item)
+		if info.IsAutoGenKey {
+			collection.Add(info.Item)
 		} else {
-			collection.AddWithKey(item, key)
+			collection.AddWithKey(info.Item, info.Key)
 		}
-	}
+	})
 	return g
 }
 
@@ -40,8 +42,12 @@ func (g *Group[T]) Find(key string) (T, bool) {
 	return g.c.FindByKey(key)
 }
 
-func (g *Group[T]) KeyByIndex(idx int) (string, bool) {
-	return g.c.KeyByIndex(idx)
+func (g *Group[T]) Keys() []string {
+	keys := make([]string, 0, g.c.Count())
+	g.c.ForEach(func(each *ItemInfo[T]) {
+		keys = append(keys, each.Key)
+	})
+	return keys
 }
 
 func (g *Group[T]) AsSlice() []T {
@@ -52,17 +58,10 @@ func (g *Group[T]) AsMap() map[string]T {
 	return g.c.AsMap()
 }
 
-func (g *Group[T]) SelfSort(less func(iKey string, iVal T, jKey string, jVal T) bool) *Group[T] {
-	sort.Slice(g.c.orderedKeys, func(i, j int) bool {
-		iKey, _ := g.c.KeyByIndex(i)
-		iVal := g.c.items[iKey]
-		jKey, _ := g.c.KeyByIndex(j)
-		jVal := g.c.items[jKey]
-
-		return less(iKey, iVal, jKey, jVal)
+func (g *Group[T]) SelfSort(less func(i *GroupItemInfo[T], j *GroupItemInfo[T]) bool) *Group[T] {
+	g.c.SelfSort(func(i *ItemInfo[T], j *ItemInfo[T]) bool {
+		return less(&GroupItemInfo[T]{Key: i.Key, Item: i.Item}, &GroupItemInfo[T]{Key: j.Key, Item: j.Item})
 	})
-	g.c.clearKeysIndex()
-	g.c.clearSliceCache()
 
 	return g
 }

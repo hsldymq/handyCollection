@@ -33,7 +33,8 @@ func TestJSONMarshalAsObject(t *testing.T) {
 
 func TestJSONUnmarshal(t *testing.T) {
 	s1 := "   [1,2,3,4]   "
-	c1 := NewGeneralCollection[int]().Add(9, 8, 7, 6)
+	c1 := NewGeneralCollection[int]()
+	c1.Add(9, 8, 7, 6)
 
 	err := JSONUnmarshal[int]([]byte(s1), c1, true)
 	assert.NoError(t, err)
@@ -43,8 +44,8 @@ func TestJSONUnmarshal(t *testing.T) {
 	assert.Equal(t, []int{1, 2, 3, 4}, c1.AsSlice())
 
 	s2 := `{"a":1,"b":2,"c":3}`
-	c2 := NewGeneralCollection[int]().
-		AddWithKey(9, "x").
+	c2 := NewGeneralCollection[int]()
+	c2.AddWithKey(9, "x").
 		AddWithKey(8, "y").
 		AddWithKey(7, "z")
 	err = JSONUnmarshal[int]([]byte(s2), c2, true)
