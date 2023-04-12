@@ -33,6 +33,10 @@ func GroupCollection[T any](c Collection[T], grouper func(*ItemInfo[T]) string) 
 	return g
 }
 
+func (g *Group[T]) Count() int {
+	return g.c.Count()
+}
+
 func (g *Group[T]) Set(key string, val T) *Group[T] {
 	g.c.AddWithKey(val, key)
 	return g
