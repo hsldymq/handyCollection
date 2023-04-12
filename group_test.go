@@ -37,6 +37,26 @@ func TestNewCollectionGroup(t *testing.T) {
 	assert.False(t, found)
 }
 
+func TestGroup_HasKey(t *testing.T) {
+	g := NewGroup[int]().
+		Set("a", 1).
+		Set("b", 2)
+
+	assert.True(t, g.HasKey("a"))
+	assert.False(t, g.HasKey("c"))
+}
+
+func TestGroup_Count(t *testing.T) {
+	g := NewGroup[int]().
+		Set("a", 1).
+		Set("b", 2).
+		Set("c", 3).
+		Set("d", 4).
+		Set("a", 11)
+
+	assert.Equal(t, 4, g.Count())
+}
+
 func TestGroup_SelfSort(t *testing.T) {
 	g := NewGroup[int]().
 		Set("2022", 22).
