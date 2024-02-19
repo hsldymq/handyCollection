@@ -4,10 +4,10 @@ type Sortable[T any] interface {
 }
 
 type ICollection[T any] interface {
-	Count() int
-	Contains(T) bool
 	Add(T)
 	Remove(T) bool
+	Count() int
+	Contains(T) bool
 }
 
 type ItemInfo1[T any] struct {
@@ -25,15 +25,16 @@ type IList[T any] interface {
 	Clear()
 
 	Filter(filter func(each ItemInfo1[T]) bool) IList[T]
-	SelfFilter(filter func(each ItemInfo1[T]) bool)
+	FilterSelf(filter func(each ItemInfo1[T]) bool)
 	Sort(comparer func(a T, b T) bool) IList[T]
-	SelfSort(comparer func(a T, b T) bool)
+	SortSelf(comparer func(a T, b T) bool)
 	Shuffle() IList[T]
-	SelfShuffle()
+	ShuffleSelf()
 }
 
 type List[T any] struct {
-	coll []T
+	coll   []T
+	defVal T
 }
 
 func NewList[T any]() *List[T] {
@@ -44,12 +45,62 @@ func (l *List[T]) Add(item T) {
 	l.coll = append(l.coll, item)
 }
 
-func (l *List[T]) Filter(filterFunc func(item ItemInfo1[T]) bool) IList[T] {
+func (l *List[T]) Clear() {
+	l.coll = l.coll[:0]
+}
+
+func (l *List[T]) Get(idx int) (T, bool) {
+	if idx >= len(l.coll) {
+		return l.defVal, false
+	}
+	return l.coll[idx], true
+}
+
+func (l *List[T]) IndexOf(item T) int {
+	for idx, each := range l.coll {
+		if shallowEqual(each, item) {
+			return idx
+		}
+	}
+
+	return -1
+}
+
+func (l *List[T]) Contains(v T) bool {
+	for _, each := range l.coll {
+		if shallowEqual(each, v) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (l *List[T]) Count() int {
+	return len(l.coll)
+}
+
+func (l *List[T]) Filter(filterFunc func(item ItemInfo1[T]) bool) *List[T] {
 	newList := NewList[T]()
-	for idx, item := range newList.coll {
+	for idx, item := range l.coll {
 		if filterFunc(ItemInfo1[T]{Index: idx, Item: item}) {
 			newList.Add(item)
 		}
 	}
+
 	return newList
+}
+
+func (l *List[T]) FilterSelf(filterFunc func(item ItemInfo1[T]) bool) {
+	newColl := make([]T, 0)
+	for idx, item := range l.coll {
+		if filterFunc(ItemInfo1[T]{Index: idx, Item: item}) {
+			newColl = append(newColl, item)
+		}
+	}
+	l.coll = newColl
+}
+
+func shallowEqual(v1, v2 any) bool {
+	return v1 == v2
 }
