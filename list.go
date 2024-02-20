@@ -1,5 +1,10 @@
 package handyCollection
 
+import (
+	"github.com/hsldymq/goiter"
+	"iter"
+)
+
 type Sortable[T any] interface {
 }
 
@@ -99,6 +104,17 @@ func (l *List[T]) FilterSelf(filterFunc func(item ItemInfo1[T]) bool) {
 		}
 	}
 	l.coll = newColl
+}
+
+func (l *List[T]) Iter() iter.Seq2[int, T] {
+	return goiter.SliceIter(l.coll)
+}
+
+func (l *List[T]) Clone() *List[T] {
+	clonedList := NewList[T]()
+	clonedList.coll = make([]T, 0, l.Count())
+	copy(clonedList.coll, l.coll)
+	return clonedList
 }
 
 func shallowEqual(v1, v2 any) bool {
