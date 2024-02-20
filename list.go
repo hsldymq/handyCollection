@@ -3,6 +3,7 @@ package handyCollection
 import (
 	"github.com/hsldymq/goiter"
 	"iter"
+	"slices"
 )
 
 type Sortable[T any] interface {
@@ -46,8 +47,32 @@ func NewList[T any]() *List[T] {
 	return &List[T]{}
 }
 
-func (l *List[T]) Add(item T) {
-	l.coll = append(l.coll, item)
+func (l *List[T]) Add(items ...T) {
+	l.coll = slices.Concat(l.coll, items)
+}
+
+func (l *List[T]) Concat(tl ...*List[T]) {
+	if len(tl) == 0 {
+		return
+	}
+
+	s := make([][]T, 0, len(tl)+1)
+	s = append(s, l.coll)
+	for _, each := range tl {
+		s = append(s, each.coll)
+	}
+	l.coll = slices.Concat(s...)
+}
+
+func (l *List[T]) ConcatSlices(sl ...[]T) {
+	if len(sl) == 0 {
+		return
+	}
+
+	s := make([][]T, 0, len(sl)+1)
+	s = append(s, l.coll)
+	s = append(s, sl...)
+	l.coll = slices.Concat(s...)
 }
 
 func (l *List[T]) Clear() {
