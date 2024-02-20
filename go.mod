@@ -1,9 +1,10 @@
 module github.com/hsldymq/handyCollection
 
-go 1.18
+go 1.22.0
 
 require (
 	github.com/google/uuid v1.3.0
+	github.com/hsldymq/goiter v0.0.0-20240220125319-986477d31c85
 	github.com/stretchr/testify v1.8.1
 )
 
