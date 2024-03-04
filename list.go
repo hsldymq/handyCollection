@@ -24,8 +24,8 @@ func (l *List[T]) Get(idx int) (T, bool) {
 }
 
 func (l *List[T]) IndexOf(item T) int {
-	for idx, each := range l.coll {
-		if shallowEqual(each, item) {
+	for idx, elem := range l.coll {
+		if shallowEqual(elem, item) {
 			return idx
 		}
 	}
