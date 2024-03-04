@@ -17,7 +17,7 @@ func NewList[T any]() *List[T] {
 }
 
 func (l *List[T]) Get(idx int) (T, bool) {
-	if idx >= len(l.coll) {
+	if idx >= len(l.coll) || idx < 0 {
 		return zeroVal[T](), false
 	}
 	return l.coll[idx], true
@@ -34,13 +34,7 @@ func (l *List[T]) IndexOf(item T) int {
 }
 
 func (l *List[T]) Contains(v T) bool {
-	for _, each := range l.coll {
-		if shallowEqual(each, v) {
-			return true
-		}
-	}
-
-	return false
+	return l.IndexOf(v) != -1
 }
 
 func (l *List[T]) Add(items ...T) {
