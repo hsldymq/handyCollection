@@ -1,4 +1,4 @@
-package handyCollection
+package handy
 
 type Collection[T any] interface {
 	Add(items ...T) Collection[T]

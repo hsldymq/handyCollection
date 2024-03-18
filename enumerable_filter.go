@@ -1,4 +1,4 @@
-package handyCollection
+package handy
 
 import (
 	"github.com/hsldymq/goiter"
@@ -7,6 +7,10 @@ import (
 
 type Distinctable interface {
 	DistinctKey() any
+}
+
+func filter[T any](e Enumerable[T], predicate func(T) bool) Enumerable[T] {
+	return newEnumerator(goiter.Filter(e.Iter(), predicate))
 }
 
 func distinct[T any](e Enumerable[T]) Enumerable[T] {
@@ -43,8 +47,4 @@ func distinctBy[T any](e Enumerable[T], keySelector func(v T) any) Enumerable[T]
 		}
 	}
 	return newEnumerator(seq)
-}
-
-func filter[T any](e Enumerable[T], predicate func(T) bool) Enumerable[T] {
-	return newEnumerator(goiter.Filter(e.Iter(), predicate))
 }

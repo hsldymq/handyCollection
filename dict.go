@@ -1,4 +1,4 @@
-package handyCollection
+package handy
 
 type KVPair[K comparable, V any] struct {
 	Key K

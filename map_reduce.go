@@ -1,4 +1,4 @@
-package handyCollection
+package handy
 
 func Map[S any, D any](srcCollection Collection[S], mapper func(item S) D) Collection[D] {
 	distCollection := NewGeneralCollection[D]()

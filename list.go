@@ -1,6 +1,6 @@
 //go:build goexperiment.rangefunc
 
-package handyCollection
+package handy
 
 import (
 	"github.com/hsldymq/goiter"

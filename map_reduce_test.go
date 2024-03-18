@@ -1,4 +1,4 @@
-package handyCollection
+package handy
 
 import (
 	"github.com/stretchr/testify/assert"
