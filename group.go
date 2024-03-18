@@ -1,4 +1,4 @@
-package handyCollection
+package handy
 
 type GroupItemInfo[T any] struct {
 	Key  string
