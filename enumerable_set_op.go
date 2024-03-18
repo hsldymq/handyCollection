@@ -17,9 +17,9 @@ func unionBy[T any](e1, e2 Enumerable[T], keySelector func(T) any) Enumerable[T]
 
 func intersect[T any](e1, e2 Enumerable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
-	_, distinctable := any(zeroVal[T]()).(Distinctable)
-	if distinctable {
-		return intersectBy(e1, e2, func(v T) any { return any(v).(Distinctable).DistinctKey() })
+	_, comparableImpl := any(zeroVal[T]()).(Comparable)
+	if comparableImpl {
+		return intersectBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparableKey() })
 	} else if typeComparable {
 		return intersectBy(e1, e2, func(v T) any { return v })
 	} else {
@@ -67,9 +67,9 @@ func intersectBy[T any](e1, e2 Enumerable[T], keySelector func(T) any) Enumerabl
 
 func except[T any](e1, e2 Enumerable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
-	_, distinctable := any(zeroVal[T]()).(Distinctable)
-	if distinctable {
-		return exceptBy(e1, e2, func(v T) any { return any(v).(Distinctable).DistinctKey() })
+	_, comparableImpl := any(zeroVal[T]()).(Comparable)
+	if comparableImpl {
+		return exceptBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparableKey() })
 	} else if typeComparable {
 		return exceptBy(e1, e2, func(v T) any { return v })
 	} else {

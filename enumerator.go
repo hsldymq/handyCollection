@@ -76,3 +76,15 @@ func (e *Enumerator[T]) Expect(target Enumerable[T]) Enumerable[T] {
 func (e *Enumerator[T]) ExpectBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
 	return exceptBy(e, target, keySelector)
 }
+
+func (e *Enumerator[T]) SequenceEqual(target Enumerable[T]) bool {
+	return sequenceEqual(e, target)
+}
+
+func (e *Enumerator[T]) SequenceEqualBy(target Enumerable[T], keySelector func(T) any) bool {
+	return sequenceEqualBy(e, target, keySelector)
+}
+
+func (e *Enumerator[T]) Concat(iterables ...Iterable[T]) Enumerable[T] {
+	return concat(e, iterables...)
+}

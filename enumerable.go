@@ -20,4 +20,11 @@ type Enumerable[T any] interface {
 	IntersectBy(Enumerable[T], func(T) any) Enumerable[T]
 	Expect(Enumerable[T]) Enumerable[T]
 	ExpectBy(Enumerable[T], func(T) any) Enumerable[T]
+	SequenceEqual(Enumerable[T]) bool
+	SequenceEqualBy(Enumerable[T], func(T) any) bool
+	Concat(...Iterable[T]) Enumerable[T]
+}
+
+type Comparable interface {
+	ComparableKey() any
 }

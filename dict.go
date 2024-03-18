@@ -5,6 +5,6 @@ type KVPair[K comparable, V any] struct {
 	Val V
 }
 
-func (p KVPair[K, V]) DistinctKey() any {
+func (p KVPair[K, V]) ComparableKey() any {
 	return p.Key
 }

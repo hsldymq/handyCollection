@@ -5,19 +5,15 @@ import (
 	"iter"
 )
 
-type Distinctable interface {
-	DistinctKey() any
-}
-
 func filter[T any](e Enumerable[T], predicate func(T) bool) Enumerable[T] {
 	return newEnumerator(goiter.Filter(e.Iter(), predicate))
 }
 
 func distinct[T any](e Enumerable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
-	_, distinctable := any(zeroVal[T]()).(Distinctable)
-	if distinctable {
-		return distinctBy(e, func(v T) any { return any(v).(Distinctable).DistinctKey() })
+	_, comparableImpl := any(zeroVal[T]()).(Comparable)
+	if comparableImpl {
+		return distinctBy(e, func(v T) any { return any(v).(Comparable).ComparableKey() })
 	} else if typeComparable {
 		return distinctBy(e, func(v T) any { return v })
 	} else {
