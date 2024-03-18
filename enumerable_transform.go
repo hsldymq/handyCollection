@@ -9,7 +9,7 @@ func Transform[In any, Out any](e Enumerable[In], transformer func(In) Out) Enum
 	return newEnumerator(goiter.T1(e.Iter(), transformer))
 }
 
-func TransformExpand[In any, Out any](e Enumerable[In], transformer func(In) Enumerable[Out]) Enumerable[Out] {
+func TransformExpand[In any, Out any](e Enumerable[In], transformer func(In) Iterable[Out]) Enumerable[Out] {
 	seq := func(yield func(Out) bool) {
 		next, stop := iter.Pull(e.Iter())
 		defer stop()
@@ -18,9 +18,7 @@ func TransformExpand[In any, Out any](e Enumerable[In], transformer func(In) Enu
 			if !ok {
 				return
 			}
-
-			transformed := transformer(v)
-			for each := range transformed.Iter() {
+			for each := range transformer(v).Iter() {
 				if !yield(each) {
 					return
 				}
