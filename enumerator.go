@@ -52,3 +52,27 @@ func (e *Enumerator[T]) Distinct() Enumerable[T] {
 func (e *Enumerator[T]) DistinctBy(keySelector func(T) any) Enumerable[T] {
 	return distinctBy(e, keySelector)
 }
+
+func (e *Enumerator[T]) Union(target Enumerable[T]) Enumerable[T] {
+	return union(e, target)
+}
+
+func (e *Enumerator[T]) UnionBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
+	return unionBy(e, target, keySelector)
+}
+
+func (e *Enumerator[T]) Intersect(target Enumerable[T]) Enumerable[T] {
+	return intersect(e, target)
+}
+
+func (e *Enumerator[T]) IntersectBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
+	return intersectBy(e, target, keySelector)
+}
+
+func (e *Enumerator[T]) Expect(target Enumerable[T]) Enumerable[T] {
+	return except(e, target)
+}
+
+func (e *Enumerator[T]) ExpectBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
+	return exceptBy(e, target, keySelector)
+}
