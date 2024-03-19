@@ -78,7 +78,7 @@ func (e *Enumerator[T]) ExpectBy(target Enumerable[T], keySelector func(T) any) 
 }
 
 func (e *Enumerator[T]) SequenceEqual(target Enumerable[T]) bool {
-	return sequenceEqual(e, target)
+	return sequenceEqual[T](e, target)
 }
 
 func (e *Enumerator[T]) SequenceEqualBy(target Enumerable[T], keySelector func(T) any) bool {
