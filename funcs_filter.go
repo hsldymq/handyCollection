@@ -5,11 +5,11 @@ import (
 	"iter"
 )
 
-func filter[T any](e Enumerable[T], predicate func(T) bool) Enumerable[T] {
+func filter[T any](e Iterable[T], predicate func(T) bool) Enumerable[T] {
 	return newEnumerator(goiter.Filter(e.Iter(), predicate))
 }
 
-func distinct[T any](e Enumerable[T]) Enumerable[T] {
+func distinct[T any](e Iterable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
 	_, comparableImpl := any(zeroVal[T]()).(Comparable)
 	if comparableImpl {
@@ -21,7 +21,7 @@ func distinct[T any](e Enumerable[T]) Enumerable[T] {
 	}
 }
 
-func distinctBy[T any](e Enumerable[T], keySelector func(v T) any) Enumerable[T] {
+func distinctBy[T any](e Iterable[T], keySelector func(v T) any) Enumerable[T] {
 	seq := func(yield func(T) bool) {
 		yielded := map[any]bool{}
 
