@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	github.com/google/uuid v1.3.0
-	github.com/hsldymq/goiter v0.6.0
+	github.com/hsldymq/goiter v0.7.0
 	github.com/stretchr/testify v1.8.1
 )
 
