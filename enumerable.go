@@ -23,6 +23,7 @@ type Enumerable[T any] interface {
 	SequenceEqual(Enumerable[T]) bool
 	SequenceEqualBy(Enumerable[T], func(T) any) bool
 	Concat(...Iterable[T]) Enumerable[T]
+	OrderBy(func(T, T) int) Enumerable[T]
 }
 
 type Comparable interface {

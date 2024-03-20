@@ -88,3 +88,7 @@ func (e *Enumerator[T]) SequenceEqualBy(target Enumerable[T], keySelector func(T
 func (e *Enumerator[T]) Concat(iterables ...Iterable[T]) Enumerable[T] {
 	return concat(e, iterables...)
 }
+
+func (e *Enumerator[T]) OrderBy(cmpFunc func(a, b T) int) Enumerable[T] {
+	return orderBy(e, cmpFunc)
+}

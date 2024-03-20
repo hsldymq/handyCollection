@@ -5,6 +5,15 @@ import (
 	"iter"
 )
 
+func concat[T any](e Iterable[T], iterables ...Iterable[T]) Enumerable[T] {
+	seqs := []iter.Seq[T]{e.Iter()}
+	for _, each := range iterables {
+		seqs = append(seqs, each.Iter())
+	}
+
+	return newEnumerator(goiter.Concat(seqs...))
+}
+
 func sequenceEqual[T any](e1, e2 Iterable[T]) bool {
 	typeComparable := isTypeComparable[T]()
 	_, comparableImpl := any(zeroVal[T]()).(Comparable)
@@ -34,13 +43,4 @@ func sequenceEqualBy[T any](e1, e2 Iterable[T], keySelector func(T) any) bool {
 			return false
 		}
 	}
-}
-
-func concat[T any](e Iterable[T], iterables ...Iterable[T]) Enumerable[T] {
-	seqs := []iter.Seq[T]{e.Iter()}
-	for _, each := range iterables {
-		seqs = append(seqs, each.Iter())
-	}
-
-	return newEnumerator(goiter.Concat(seqs...))
 }
