@@ -65,7 +65,7 @@ func (l *List[T]) Merge(tl ...*List[T]) {
 	l.elems = slices.Concat(s...)
 }
 
-func (l *List[T]) ConcatSlices(sl ...[]T) {
+func (l *List[T]) MergeSlices(sl ...[]T) {
 	if len(sl) == 0 {
 		return
 	}
@@ -87,12 +87,12 @@ func (l *List[T]) Clear() {
 	l.elems = l.elems[:0]
 }
 
-func (l *List[T]) Count() int {
-	return len(l.elems)
-}
-
 func (l *List[T]) Iter() iter.Seq[T] {
 	return goiter.SliceElem(l.elems)
+}
+
+func (l *List[T]) Count() int {
+	return len(l.elems)
 }
 
 func (l *List[T]) Any(predicate func(T) bool) bool {
