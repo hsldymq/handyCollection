@@ -89,6 +89,6 @@ func (e *Enumerator[T]) Concat(iterables ...Iterable[T]) Enumerable[T] {
 	return concat(e, iterables...)
 }
 
-func (e *Enumerator[T]) OrderBy(cmpFunc func(a, b T) int) Enumerable[T] {
-	return orderBy(e, cmpFunc)
+func (e *Enumerator[T]) OrderBy(cmp func(a, b T) int) Enumerable[T] {
+	return orderBy(e, cmp)
 }
