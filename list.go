@@ -47,6 +47,32 @@ func (l *List[T]) Get(idx int) (T, bool) {
 	return l.elems[idx], true
 }
 
+func (l *List[T]) GetOrDefault(idx int, def T) T {
+	v, found := l.Get(idx)
+	if !found {
+		return def
+	}
+	return v
+}
+
+func (l *List[T]) Find(predicate func(T) bool) (T, bool) {
+	for _, each := range l.elems {
+		if predicate(each) {
+			return each, true
+		}
+	}
+	return zVal[T](), false
+}
+
+func (l *List[T]) FindOrDefault(predicate func(T) bool, def T) T {
+	for _, each := range l.elems {
+		if predicate(each) {
+			return each
+		}
+	}
+	return def
+}
+
 func (l *List[T]) IndexOf(item T) int {
 	return l.indexOf(item, 0)
 }
