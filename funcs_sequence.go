@@ -16,7 +16,7 @@ func concat[T any](e Iterable[T], iterables ...Iterable[T]) Enumerable[T] {
 
 func sequenceEqual[T any](e1, e2 Iterable[T]) bool {
 	typeComparable := isTypeComparable[T]()
-	_, comparableImpl := any(zeroVal[T]()).(Comparable)
+	_, comparableImpl := any(zVal[T]()).(Comparable)
 	if comparableImpl {
 		return sequenceEqualBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparableKey() })
 	} else if typeComparable {

@@ -6,7 +6,7 @@ import (
 )
 
 func Transform[In any, Out any](e Enumerable[In], transformer func(In) Out) Enumerable[Out] {
-	return newEnumerator(goiter.T1(e.Iter(), transformer))
+	return newEnumerator(goiter.Transform(e.Iter(), transformer))
 }
 
 func TransformExpand[In any, Out any](e Enumerable[In], transformer func(In) Iterable[Out]) Enumerable[Out] {

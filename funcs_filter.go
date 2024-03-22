@@ -11,7 +11,7 @@ func filter[T any](e Iterable[T], predicate func(T) bool) Enumerable[T] {
 
 func distinct[T any](e Iterable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
-	_, comparableImpl := any(zeroVal[T]()).(Comparable)
+	_, comparableImpl := any(zVal[T]()).(Comparable)
 	if comparableImpl {
 		return distinctBy(e, func(v T) any { return any(v).(Comparable).ComparableKey() })
 	} else if typeComparable {

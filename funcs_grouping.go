@@ -52,7 +52,7 @@ func JoinAs[OuterT, InnerT any, K comparable, ResultT any](
 	transformer func(OuterT, InnerT) ResultT,
 ) Enumerable[ResultT] {
 	joinedSeq := Join(outer, inner, outerKeySelector, innerKeySelector).Iter()
-	transformedSeq := goiter.T1(joinedSeq, func(combined *Combined[OuterT, InnerT]) ResultT {
+	transformedSeq := goiter.Transform(joinedSeq, func(combined *Combined[OuterT, InnerT]) ResultT {
 		return transformer(combined.First, combined.Second)
 	})
 
@@ -99,7 +99,7 @@ func GroupJoinAs[OuterT, InnerT any, K comparable, ResultT any](
 	transformer func(OuterT, Enumerable[InnerT]) ResultT,
 ) Enumerable[ResultT] {
 	joinedSeq := GroupJoin(outer, inner, outerKeySelector, innerKeySelector).Iter()
-	transformedSeq := goiter.T1(joinedSeq, func(combined *Combined[OuterT, Enumerable[InnerT]]) ResultT {
+	transformedSeq := goiter.Transform(joinedSeq, func(combined *Combined[OuterT, Enumerable[InnerT]]) ResultT {
 		return transformer(combined.First, combined.Second)
 	})
 
