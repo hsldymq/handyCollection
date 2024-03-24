@@ -27,3 +27,27 @@ func TransformExpand[In any, Out any](e Enumerable[In], transformer func(In) Ite
 	}
 	return newEnumerator(seq)
 }
+
+func ToList[T any](e Enumerable[T]) *List[T] {
+	l := NewList[T]()
+	for each := range e.Iter() {
+		l.Add(each)
+	}
+	return l
+}
+
+func ToListBy[T, R any](e Enumerable[T], transformer func(T) R) *List[R] {
+	l := NewList[R]()
+	for each := range e.Iter() {
+		l.Add(transformer(each))
+	}
+	return l
+}
+
+func ToDictBy[T any, K comparable, V any](e Enumerable[T], transformer func(T) (K, V)) *Dict[K, V] {
+	l := NewDict[K, V]()
+	for each := range e.Iter() {
+		l.Set(transformer(each))
+	}
+	return l
+}
