@@ -9,7 +9,7 @@ func filter[T any](e Iterable[T], predicate func(T) bool) Enumerable[T] {
 	return newEnumerator(goiter.Filter(e.Iter(), predicate))
 }
 
-func distinct[T any](e Iterable[T]) Enumerable[T] {
+func distinct[T any](e Enumerable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
 	_, comparableImpl := any(zVal[T]()).(Comparable)
 	if comparableImpl {
@@ -17,7 +17,7 @@ func distinct[T any](e Iterable[T]) Enumerable[T] {
 	} else if typeComparable {
 		return distinctBy(e, func(v T) any { return v })
 	} else {
-		return newEnumerator(e.Iter())
+		return e
 	}
 }
 
