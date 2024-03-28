@@ -14,6 +14,8 @@ type Enumerable[T any] interface {
 	Filter(func(T) bool) Enumerable[T]
 	Distinct() Enumerable[T]
 	DistinctBy(func(T) any) Enumerable[T]
+	Take(int) Enumerable[T]
+	Skip(int) Enumerable[T]
 	Union(Enumerable[T]) Enumerable[T]
 	UnionBy(Enumerable[T], func(T) any) Enumerable[T]
 	Intersect(Enumerable[T]) Enumerable[T]

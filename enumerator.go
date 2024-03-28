@@ -53,6 +53,14 @@ func (e *Enumerator[T]) DistinctBy(keySelector func(T) any) Enumerable[T] {
 	return distinctBy(e, keySelector)
 }
 
+func (e *Enumerator[T]) Take(n int) Enumerable[T] {
+	return newEnumerator(goiter.Take(e.Iter(), n))
+}
+
+func (e *Enumerator[T]) Skip(n int) Enumerable[T] {
+	return newEnumerator(goiter.Skip(e.Iter(), n))
+}
+
 func (e *Enumerator[T]) Union(target Enumerable[T]) Enumerable[T] {
 	return union(e, target)
 }

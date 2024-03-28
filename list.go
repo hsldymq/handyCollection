@@ -261,6 +261,14 @@ func (l *List[T]) Distinct() Enumerable[T] {
 	return distinct[T](l)
 }
 
+func (l *List[T]) Take(n int) Enumerable[T] {
+	return newEnumerator(goiter.Take(l.Iter(), n))
+}
+
+func (l *List[T]) Skip(n int) Enumerable[T] {
+	return newEnumerator(goiter.Skip(l.Iter(), n))
+}
+
 func (l *List[T]) DistinctBy(keySelector func(T) any) Enumerable[T] {
 	return distinctBy(l, keySelector)
 }
