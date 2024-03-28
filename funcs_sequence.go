@@ -18,7 +18,7 @@ func sequenceEqual[T any](e1, e2 Iterable[T]) bool {
 	typeComparable := isTypeComparable[T]()
 	_, comparableImpl := any(zVal[T]()).(Comparable)
 	if comparableImpl {
-		return sequenceEqualBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparableKey() })
+		return sequenceEqualBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparingKey() })
 	} else if typeComparable {
 		return sequenceEqualBy(e1, e2, func(v T) any { return v })
 	}

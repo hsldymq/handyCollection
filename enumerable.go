@@ -27,5 +27,5 @@ type Enumerable[T any] interface {
 }
 
 type Comparable interface {
-	ComparableKey() any
+	ComparingKey() any
 }

@@ -13,7 +13,7 @@ func distinct[T any](e Enumerable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
 	_, comparableImpl := any(zVal[T]()).(Comparable)
 	if comparableImpl {
-		return distinctBy(e, func(v T) any { return any(v).(Comparable).ComparableKey() })
+		return distinctBy(e, func(v T) any { return any(v).(Comparable).ComparingKey() })
 	} else if typeComparable {
 		return distinctBy(e, func(v T) any { return v })
 	} else {

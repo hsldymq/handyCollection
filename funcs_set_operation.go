@@ -19,7 +19,7 @@ func intersect[T any](e1, e2 Enumerable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
 	_, comparableImpl := any(zVal[T]()).(Comparable)
 	if comparableImpl {
-		return intersectBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparableKey() })
+		return intersectBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparingKey() })
 	} else if typeComparable {
 		return intersectBy(e1, e2, func(v T) any { return v })
 	} else {
@@ -69,7 +69,7 @@ func except[T any](e1, e2 Enumerable[T]) Enumerable[T] {
 	typeComparable := isTypeComparable[T]()
 	_, comparableImpl := any(zVal[T]()).(Comparable)
 	if comparableImpl {
-		return exceptBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparableKey() })
+		return exceptBy(e1, e2, func(v T) any { return any(v).(Comparable).ComparingKey() })
 	} else if typeComparable {
 		return exceptBy(e1, e2, func(v T) any { return v })
 	} else {
