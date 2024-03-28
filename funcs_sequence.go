@@ -6,12 +6,12 @@ import (
 )
 
 func concat[T any](e Iterable[T], iterables ...Iterable[T]) Enumerable[T] {
-	seqs := []iter.Seq[T]{e.Iter()}
+	seqs := []iter.Seq[T]{}
 	for _, each := range iterables {
 		seqs = append(seqs, each.Iter())
 	}
 
-	return newEnumerator(goiter.Concat(seqs...))
+	return newEnumerator(goiter.Concat(e.Iter(), seqs...))
 }
 
 func sequenceEqual[T any](e1, e2 Iterable[T]) bool {
