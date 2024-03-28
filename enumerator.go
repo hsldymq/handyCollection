@@ -5,26 +5,26 @@ import (
 	"iter"
 )
 
-func newEnumerator[T any](seq iter.Seq[T]) *Enumerator[T] {
+func newEnumerator[TIter goiter.SeqX[T], T any](it TIter) *Enumerator[T] {
 	return &Enumerator[T]{
-		seq: seq,
+		iterator: goiter.Iterator[T](it),
 	}
 }
 
 type Enumerator[T any] struct {
-	seq iter.Seq[T]
+	iterator goiter.Iterator[T]
 }
 
 func (e *Enumerator[T]) Iter() iter.Seq[T] {
-	return e.seq
+	return e.iterator.Seq()
 }
 
 func (e *Enumerator[T]) Count() int {
-	return goiter.Count(e.seq)
+	return e.iterator.Count()
 }
 
 func (e *Enumerator[T]) Any(predicate func(T) bool) bool {
-	for each := range e.seq {
+	for each := range e.iterator {
 		if predicate(each) {
 			return true
 		}
@@ -33,7 +33,7 @@ func (e *Enumerator[T]) Any(predicate func(T) bool) bool {
 }
 
 func (e *Enumerator[T]) All(predicate func(T) bool) bool {
-	for each := range e.seq {
+	for each := range e.iterator {
 		if !predicate(each) {
 			return false
 		}
