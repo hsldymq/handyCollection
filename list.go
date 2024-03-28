@@ -26,15 +26,6 @@ func NewListWithElems[T any](elems ...T) *List[T] {
 	return l
 }
 
-func NewListWithSlices[T any](s ...[]T) *List[T] {
-	l := &List[T]{
-		elems:      make([]T, 0),
-		comparable: isTypeComparable[T](),
-	}
-	l.MergeSlices(s...)
-	return l
-}
-
 type List[T any] struct {
 	elems      []T
 	comparable bool
@@ -190,6 +181,17 @@ func (l *List[T]) FilterSelf(predicate func(T) bool) {
 	l.elems = newElems
 }
 
+func (l *List[T]) FilterTo(predicate func(T) bool) *List[T] {
+	newElems := make([]T, 0, len(l.elems))
+	for _, each := range l.elems {
+		if predicate(each) {
+			newElems = append(newElems, each)
+		}
+	}
+
+	return NewListWithElems(newElems...)
+}
+
 func (l *List[T]) ShuffleSelf() {
 	count := len(l.elems)
 	if count < 2 {
@@ -204,6 +206,12 @@ func (l *List[T]) ShuffleSelf() {
 	}
 }
 
+func (l *List[T]) ShuffleTo() *List[T] {
+	newList := l.Clone()
+	newList.ShuffleSelf()
+	return newList
+}
+
 func (l *List[T]) Clone() *List[T] {
 	clonedList := NewList[T]()
 	clonedList.elems = make([]T, 0, l.Count())
@@ -216,11 +224,11 @@ func (l *List[T]) Clear() {
 }
 
 func (l *List[T]) IterBackward() iter.Seq[T] {
-	return goiter.SliceSourceElem(func() []T { return l.elems }, true)
+	return goiter.SliceSourceElem(func() []T { return l.elems }, true).Seq()
 }
 
 func (l *List[T]) Iter() iter.Seq[T] {
-	return goiter.SliceSourceElem(func() []T { return l.elems })
+	return goiter.SliceSourceElem(func() []T { return l.elems }).Seq()
 }
 
 func (l *List[T]) Count() int {
