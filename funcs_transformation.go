@@ -43,11 +43,3 @@ func ToListBy[T, R any](e Enumerable[T], transformer func(T) R) *List[R] {
 	}
 	return l
 }
-
-func ToDictBy[T any, K comparable, V any](e Enumerable[T], transformer func(T) (K, V)) *Dict[K, V] {
-	l := NewDict[K, V]()
-	for each := range e.Iter() {
-		l.Set(transformer(each))
-	}
-	return l
-}
