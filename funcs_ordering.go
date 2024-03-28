@@ -6,7 +6,7 @@ import (
 )
 
 func Order[T cmp.Ordered](e Iterable[T]) Enumerable[T] {
-	return newEnumerator[T](goiter.Order(e.Iter()))
+	return newEnumerator(goiter.Order(e.Iter()))
 }
 
 func orderBy[T any](e Iterable[T], cmp func(T, T) int) Enumerable[T] {
