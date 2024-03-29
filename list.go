@@ -1,5 +1,3 @@
-//go:build goexperiment.rangefunc
-
 package handy
 
 import (
@@ -265,8 +263,44 @@ func (l *List[T]) Take(n int) Enumerable[T] {
 	return newEnumerator(goiter.Take(l.Iter(), n))
 }
 
+func (l *List[T]) TakeLast(n int) Enumerable[T] {
+	iterator := func(yield func(T) bool) {
+		if n <= 0 {
+			return
+		}
+
+		elems := l.elems
+		startIdx := max(len(elems)-n, 0)
+		for i := 0; i < n && startIdx+i < len(elems); i++ {
+			if !yield(elems[startIdx+i]) {
+				return
+			}
+		}
+	}
+
+	return newEnumerator(iterator)
+}
+
 func (l *List[T]) Skip(n int) Enumerable[T] {
 	return newEnumerator(goiter.Skip(l.Iter(), n))
+}
+
+func (l *List[T]) SkipLast(n int) Enumerable[T] {
+	iterator := func(yield func(T) bool) {
+		elems := l.elems
+		endIdx := len(elems) - 1
+		if n > 0 {
+			endIdx = len(elems) - n - 1
+		}
+
+		for i := 0; i <= endIdx; i++ {
+			if !yield(elems[i]) {
+				return
+			}
+		}
+	}
+
+	return newEnumerator(iterator)
 }
 
 func (l *List[T]) DistinctBy(keySelector func(T) any) Enumerable[T] {

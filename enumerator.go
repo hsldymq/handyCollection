@@ -57,8 +57,16 @@ func (e *Enumerator[T]) Take(n int) Enumerable[T] {
 	return newEnumerator(goiter.Take(e.Iter(), n))
 }
 
+func (e *Enumerator[T]) TakeLast(n int) Enumerable[T] {
+	return newEnumerator(goiter.TakeLast(e.Iter(), n))
+}
+
 func (e *Enumerator[T]) Skip(n int) Enumerable[T] {
 	return newEnumerator(goiter.Skip(e.Iter(), n))
+}
+
+func (e *Enumerator[T]) SkipLast(n int) Enumerable[T] {
+	return newEnumerator(goiter.SkipLast(e.Iter(), n))
 }
 
 func (e *Enumerator[T]) Union(target Enumerable[T]) Enumerable[T] {
