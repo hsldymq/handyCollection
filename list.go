@@ -354,7 +354,7 @@ func (l *List[T]) indexOf(item T, startsFrom int) int {
 
     for idx := startsFrom; idx < len(l.elems); idx++ {
         elem := l.elems[idx]
-        if shallowEqual(elem, item) {
+        if any(elem) == any(item) {
             return idx
         }
     }
