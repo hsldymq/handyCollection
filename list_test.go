@@ -6,6 +6,77 @@ import (
     "testing"
 )
 
+func TestList_Merge(t *testing.T) {
+    list := NewList[int]()
+    l2 := NewListWithElems(1, 2, 3)
+    l3 := NewListWithElems(4, 5, 6)
+    l4 := NewListWithElems(7, 8, 9)
+    list.Merge(l2, l3, l4)
+
+    actual := list.elems
+    expect := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Merge expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_MergeSlices(t *testing.T) {
+    list := NewList[int]()
+    list.MergeSlices([]int{1, 2, 3}, []int{4, 5, 6}, []int{7, 8, 9})
+
+    actual := list.elems
+    expect := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.MergeSlices expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_Remove(t *testing.T) {
+    list := NewList[int]()
+    list.Merge(NewListWithElems(1, 2, 3, 4, 5))
+    list.Remove(3)
+    actual := []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{1, 2, 4, 5}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Remove expect: %v, actual: %v", expect, actual)
+    }
+
+    type person struct {
+        Name string
+        Age  int
+    }
+    alice := &person{"Alice", 20}
+    bob := &person{"Bob", 30}
+    eve := &person{"Eve", 40}
+    list2 := NewListWithElems[*person](alice, bob, eve)
+    list2.Remove(bob)
+    actual2 := []person{}
+    for v := range list2.Iter() {
+        actual2 = append(actual2, *v)
+    }
+    expect2 := []person{
+        {"Alice", 20},
+        {"Eve", 40},
+    }
+    if !slices.Equal(expect2, actual2) {
+        t.Fatalf("test List.Remove expect: %v, actual: %v", expect, actual)
+    }
+
+    f1 := func() {}
+    list3 := NewListWithElems[func()](f1, func() {}, func() {})
+    list3.Remove(f1)
+    if list3.Count() != 3 {
+        t.Fatalf("test List.Remove, func is not comparable, Remove should has no effect")
+    }
+}
+
+func TestList_RemoveAt(t *testing.T) {
+
+}
+
 func TestList_Pop(t *testing.T) {
     list := NewListFromIter[int](goiter.Range(1, 3).Seq())
 
