@@ -39,8 +39,7 @@ func TestList_Merge(t *testing.T) {
     }
 
     list = NewList(1, 2, 3)
-    l2 = NewList[int]()
-    list.Merge(l2)
+    list.Merge()
     actual = []int{}
     for v := range list.Iter() {
         actual = append(actual, v)
