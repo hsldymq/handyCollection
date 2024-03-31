@@ -24,67 +24,17 @@ func NewListWithElems[T any](elems ...T) *List[T] {
     return l
 }
 
+func NewListFromIter[T any](it iter.Seq[T]) *List[T] {
+    l := NewList[T]()
+    for each := range it {
+        l.Add(each)
+    }
+    return l
+}
+
 type List[T any] struct {
     elems      []T
     comparable bool
-}
-
-func (l *List[T]) Get(idx int) (T, bool) {
-    if idx >= len(l.elems) || idx < 0 {
-        return zVal[T](), false
-    }
-    return l.elems[idx], true
-}
-
-func (l *List[T]) GetOrDefault(idx int, def T) T {
-    v, found := l.Get(idx)
-    if !found {
-        return def
-    }
-    return v
-}
-
-func (l *List[T]) Find(predicate func(T) bool) (T, bool) {
-    for _, each := range l.elems {
-        if predicate(each) {
-            return each, true
-        }
-    }
-    return zVal[T](), false
-}
-
-func (l *List[T]) FindOrDefault(predicate func(T) bool, def T) T {
-    v, found := l.Find(predicate)
-    if !found {
-        return def
-    }
-    return v
-}
-
-func (l *List[T]) FindLast(predicate func(T) bool) (T, bool) {
-    for i := len(l.elems) - 1; i >= 0; i-- {
-        each := l.elems[i]
-        if predicate(each) {
-            return each, true
-        }
-    }
-    return zVal[T](), false
-}
-
-func (l *List[T]) FindLastOrDefault(predicate func(T) bool, def T) T {
-    v, found := l.FindLast(predicate)
-    if !found {
-        return def
-    }
-    return v
-}
-
-func (l *List[T]) IndexOf(item T) int {
-    return l.indexOf(item, 0)
-}
-
-func (l *List[T]) Contains(item T) bool {
-    return l.IndexOf(item) >= 0
 }
 
 func (l *List[T]) Add(items ...T) {
@@ -147,6 +97,56 @@ func (l *List[T]) Pop() (T, bool) {
 
 func (l *List[T]) Shift() (T, bool) {
     return l.RemoveAt(0)
+}
+
+func (l *List[T]) Get(idx int) (T, bool) {
+    if idx >= len(l.elems) || idx < 0 {
+        return zVal[T](), false
+    }
+    return l.elems[idx], true
+}
+
+func (l *List[T]) Find(predicate func(T) bool) (T, bool) {
+    for _, each := range l.elems {
+        if predicate(each) {
+            return each, true
+        }
+    }
+    return zVal[T](), false
+}
+
+func (l *List[T]) FindOrDefault(predicate func(T) bool, def T) T {
+    v, found := l.Find(predicate)
+    if !found {
+        return def
+    }
+    return v
+}
+
+func (l *List[T]) FindLast(predicate func(T) bool) (T, bool) {
+    for i := len(l.elems) - 1; i >= 0; i-- {
+        each := l.elems[i]
+        if predicate(each) {
+            return each, true
+        }
+    }
+    return zVal[T](), false
+}
+
+func (l *List[T]) FindLastOrDefault(predicate func(T) bool, def T) T {
+    v, found := l.FindLast(predicate)
+    if !found {
+        return def
+    }
+    return v
+}
+
+func (l *List[T]) IndexOf(item T) int {
+    return l.indexOf(item, 0)
+}
+
+func (l *List[T]) Contains(item T) bool {
+    return l.IndexOf(item) >= 0
 }
 
 func (l *List[T]) Sort(cmp func(T, T) int) {
