@@ -193,6 +193,21 @@ func TestList_Shift(t *testing.T) {
     }
 }
 
+func TestList_IndexOf(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    actual := list.IndexOf(3)
+    expect := 2
+    if expect != actual {
+        t.Fatalf("test List.IndexOf expect: %v, actual: %v", expect, actual)
+    }
+
+    actual = list.IndexOf(6)
+    expect = -1
+    if expect != actual {
+        t.Fatalf("test List.IndexOf expect: %v, actual: %v", expect, actual)
+    }
+}
+
 func TestList_Take(t *testing.T) {
     list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
