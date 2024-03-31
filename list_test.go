@@ -227,6 +227,7 @@ func TestList_Take(t *testing.T) {
 func TestList_TakeLast(t *testing.T) {
     list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
+    // case 1
     actual := []int{}
     for v := range list.TakeLast(5).Iter() {
         actual = append(actual, v)
@@ -236,6 +237,20 @@ func TestList_TakeLast(t *testing.T) {
         t.Fatalf("test List.TakeLast expect: %v, actual: %v", expect, actual)
     }
 
+    // case 2
+    actual = []int{}
+    for v := range list.TakeLast(5).Iter() {
+        actual = append(actual, v)
+        if v == 6 {
+            break
+        }
+    }
+    expect = []int{4, 5, 6}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.TakeLast expect: %v, actual: %v", expect, actual)
+    }
+
+    // case 3
     actual = []int{}
     for v := range list.TakeLast(10).Iter() {
         actual = append(actual, v)
@@ -245,6 +260,7 @@ func TestList_TakeLast(t *testing.T) {
         t.Fatalf("test List.TakeLast expect: %v, actual: %v", expect, actual)
     }
 
+    // case 4
     actual = []int{}
     for v := range list.TakeLast(-1).Iter() {
         actual = append(actual, v)
@@ -289,6 +305,7 @@ func TestList_Skip(t *testing.T) {
 func TestList_SkipLast(t *testing.T) {
     list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
+    // case 1
     actual := []int{}
     for v := range list.SkipLast(5).Iter() {
         actual = append(actual, v)
@@ -298,6 +315,20 @@ func TestList_SkipLast(t *testing.T) {
         t.Fatalf("test List.SkipLast expect: %v, actual: %v", expect, actual)
     }
 
+    // case 2
+    actual = []int{}
+    for v := range list.SkipLast(4).Iter() {
+        actual = append(actual, v)
+        if v == 3 {
+            break
+        }
+    }
+    expect = []int{1, 2, 3}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.TakeLast expect: %v, actual: %v", expect, actual)
+    }
+
+    // case 3
     actual = []int{}
     for v := range list.SkipLast(8).Iter() {
         actual = append(actual, v)
@@ -307,6 +338,7 @@ func TestList_SkipLast(t *testing.T) {
         t.Fatalf("test List.SkipLast expect: %v, actual: %v", expect, actual)
     }
 
+    // case 4
     actual = []int{}
     for v := range list.SkipLast(-1).Iter() {
         actual = append(actual, v)
