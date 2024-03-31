@@ -63,13 +63,13 @@ func TestList_MergeSlices(t *testing.T) {
         t.Fatalf("test List.MergeSlices expect: %v, actual: %v", expect, actual)
     }
 
-    list = NewList[int]()
-    list.MergeSlices([]int{1, 2, 3}, []int{4, 5, 6}, []int{7, 8, 9})
+    list = NewList[int](1, 2, 3)
+    list.MergeSlices()
     actual = []int{}
     for v := range list.Iter() {
         actual = append(actual, v)
     }
-    expect = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    expect = []int{1, 2, 3}
     if !slices.Equal(expect, actual) {
         t.Fatalf("test List.MergeSlices expect: %v, actual: %v", expect, actual)
     }
