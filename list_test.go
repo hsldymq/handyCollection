@@ -6,15 +6,46 @@ import (
     "testing"
 )
 
+func TestNewList(t *testing.T) {
+    list := NewList[int]()
+    if len(list.elems) != 0 {
+        t.Fatalf("test NewList, create an empty list, len should be 0")
+    }
+
+    list = NewList(1, 2, 3)
+    actual := []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{1, 2, 3}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test NewList expect: %v, actual: %v", expect, actual)
+    }
+}
+
 func TestList_Merge(t *testing.T) {
     list := NewList[int]()
-    l2 := NewListWithElems(1, 2, 3)
-    l3 := NewListWithElems(4, 5, 6)
-    l4 := NewListWithElems(7, 8, 9)
+    l2 := NewList(1, 2, 3)
+    l3 := NewList(4, 5, 6)
+    l4 := NewList(7, 8, 9)
     list.Merge(l2, l3, l4)
-
-    actual := list.elems
+    actual := []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
     expect := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Merge expect: %v, actual: %v", expect, actual)
+    }
+
+    list = NewList(1, 2, 3)
+    l2 = NewList[int]()
+    list.Merge(l2)
+    actual = []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
+    expect = []int{1, 2, 3}
     if !slices.Equal(expect, actual) {
         t.Fatalf("test List.Merge expect: %v, actual: %v", expect, actual)
     }
@@ -23,9 +54,22 @@ func TestList_Merge(t *testing.T) {
 func TestList_MergeSlices(t *testing.T) {
     list := NewList[int]()
     list.MergeSlices([]int{1, 2, 3}, []int{4, 5, 6}, []int{7, 8, 9})
-
-    actual := list.elems
+    actual := []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
     expect := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.MergeSlices expect: %v, actual: %v", expect, actual)
+    }
+
+    list = NewList[int]()
+    list.MergeSlices([]int{1, 2, 3}, []int{4, 5, 6}, []int{7, 8, 9})
+    actual = []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
+    expect = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
     if !slices.Equal(expect, actual) {
         t.Fatalf("test List.MergeSlices expect: %v, actual: %v", expect, actual)
     }
@@ -33,7 +77,7 @@ func TestList_MergeSlices(t *testing.T) {
 
 func TestList_Remove(t *testing.T) {
     list := NewList[int]()
-    list.Merge(NewListWithElems(1, 2, 3, 4, 5))
+    list.Merge(NewList(1, 2, 3, 4, 5))
     list.Remove(3)
     actual := []int{}
     for v := range list.Iter() {
@@ -51,7 +95,7 @@ func TestList_Remove(t *testing.T) {
     alice := &person{"Alice", 20}
     bob := &person{"Bob", 30}
     eve := &person{"Eve", 40}
-    list2 := NewListWithElems[*person](alice, bob, eve)
+    list2 := NewList[*person](alice, bob, eve)
     list2.Remove(bob)
     actual2 := []person{}
     for v := range list2.Iter() {
@@ -66,7 +110,7 @@ func TestList_Remove(t *testing.T) {
     }
 
     f1 := func() {}
-    list3 := NewListWithElems[func()](f1, func() {}, func() {})
+    list3 := NewList[func()](f1, func() {}, func() {})
     list3.Remove(f1)
     if list3.Count() != 3 {
         t.Fatalf("test List.Remove, func is not comparable, Remove should has no effect")
@@ -151,7 +195,7 @@ func TestList_Shift(t *testing.T) {
 }
 
 func TestList_Take(t *testing.T) {
-    list := NewListWithElems(1, 2, 3, 4, 5, 6, 7, 8)
+    list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
     actual := []int{}
     for v := range list.Take(5).Iter() {
@@ -182,7 +226,7 @@ func TestList_Take(t *testing.T) {
 }
 
 func TestList_TakeLast(t *testing.T) {
-    list := NewListWithElems(1, 2, 3, 4, 5, 6, 7, 8)
+    list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
     actual := []int{}
     for v := range list.TakeLast(5).Iter() {
@@ -213,7 +257,7 @@ func TestList_TakeLast(t *testing.T) {
 }
 
 func TestList_Skip(t *testing.T) {
-    list := NewListWithElems(1, 2, 3, 4, 5, 6, 7, 8)
+    list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
     actual := []int{}
     for v := range list.Skip(5).Iter() {
@@ -244,7 +288,7 @@ func TestList_Skip(t *testing.T) {
 }
 
 func TestList_SkipLast(t *testing.T) {
-    list := NewListWithElems(1, 2, 3, 4, 5, 6, 7, 8)
+    list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
     actual := []int{}
     for v := range list.SkipLast(5).Iter() {
