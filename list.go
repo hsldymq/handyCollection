@@ -8,19 +8,14 @@ import (
     "time"
 )
 
-func NewList[T any]() *List[T] {
-    return &List[T]{
-        elems:      make([]T, 0),
-        comparable: isTypeComparable[T](),
-    }
-}
-
-func NewListWithElems[T any](elems ...T) *List[T] {
+func NewList[T any](elems ...T) *List[T] {
     l := &List[T]{
         elems:      make([]T, 0, len(elems)),
         comparable: isTypeComparable[T](),
     }
-    l.Add(elems...)
+    if len(elems) > 0 {
+        l.Add(elems...)
+    }
     return l
 }
 
@@ -175,7 +170,7 @@ func (l *List[T]) FilterTo(predicate func(T) bool) *List[T] {
         }
     }
 
-    return NewListWithElems(newElems...)
+    return NewList(newElems...)
 }
 
 func (l *List[T]) ShuffleSelf() {
