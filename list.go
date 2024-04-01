@@ -238,10 +238,6 @@ func (l *List[T]) Filter(predicate func(T) bool) Enumerable[T] {
     return filter(l, predicate)
 }
 
-func (l *List[T]) Distinct() Enumerable[T] {
-    return distinct[T](l)
-}
-
 func (l *List[T]) Take(n int) Enumerable[T] {
     return newEnumerator(goiter.Take(l.Iter(), n))
 }
@@ -284,6 +280,10 @@ func (l *List[T]) SkipLast(n int) Enumerable[T] {
     }
 
     return newEnumerator(iterator)
+}
+
+func (l *List[T]) Distinct() Enumerable[T] {
+    return distinct[T](l)
 }
 
 func (l *List[T]) DistinctBy(keySelector func(T) any) Enumerable[T] {
