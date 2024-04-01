@@ -482,6 +482,40 @@ func TestList_IterBackward(t *testing.T) {
     }
 }
 
+func TestList_Any(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    result := list.Any(func(v int) bool {
+        return v%2 == 0
+    })
+    if !result {
+        t.Fatalf("test List.Any, should return true")
+    }
+
+    result = list.Any(func(v int) bool {
+        return v == 6
+    })
+    if result {
+        t.Fatalf("test List.Any, should return false")
+    }
+}
+
+func TestList_All(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    result := list.All(func(v int) bool {
+        return v%2 == 0
+    })
+    if result {
+        t.Fatalf("test List.All, should return false")
+    }
+
+    result = list.All(func(v int) bool {
+        return v < 6
+    })
+    if !result {
+        t.Fatalf("test List.All, should return true")
+    }
+}
+
 func TestList_Take(t *testing.T) {
     list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
