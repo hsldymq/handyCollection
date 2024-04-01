@@ -516,6 +516,21 @@ func TestList_All(t *testing.T) {
     }
 }
 
+func TestList_Filter(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    e := list.Filter(func(v int) bool {
+        return v%2 == 0
+    })
+    actual := []int{}
+    for v := range e.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{2, 4}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Filter expect: %v, actual: %v", expect, actual)
+    }
+}
+
 func TestList_Take(t *testing.T) {
     list := NewList(1, 2, 3, 4, 5, 6, 7, 8)
 
