@@ -717,7 +717,7 @@ func TestList_Distinct(t *testing.T) {
         &personWithID{ID: "2", Name: "Bob"},
         &personWithID{ID: "3", Name: "Eve"},
         &personWithID{ID: "2", Name: "Robert"},
-        &personWithID{ID: "1", Name: "Ellie"},
+        &personWithID{ID: "5", Name: "Ellie"},
         &personWithID{ID: "3", Name: "Eva"},
     )
     actual3 := []personWithID{}
@@ -731,6 +731,7 @@ func TestList_Distinct(t *testing.T) {
         {ID: "1", Name: "Alice"},
         {ID: "2", Name: "Bob"},
         {ID: "3", Name: "Eve"},
+        {ID: "5", Name: "Ellie"},
     }
     if !slices.Equal(expect3, actual3) {
         t.Fatalf("test List.Distinct expect: %v, actual: %v", expect3, actual3)
