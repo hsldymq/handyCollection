@@ -3,6 +3,7 @@ package handy
 import (
     "github.com/hsldymq/goiter"
     "slices"
+    "sort"
     "strings"
     "testing"
 )
@@ -405,6 +406,79 @@ func TestList_StableSort(t *testing.T) {
     }
     if !slices.Equal(expect, actual) {
         t.Fatalf("test List.StableSort expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_FilterSelf(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    list.FilterSelf(func(v int) bool {
+        return v%2 == 0
+    })
+    actual := []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{2, 4}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.FilterSelf expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_FilterTo(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    list2 := list.FilterTo(func(v int) bool {
+        return v%2 == 0
+    })
+    if list == list2 {
+        t.Fatalf("test List.FilterTo, should return a new list")
+    }
+    actual := []int{}
+    for v := range list2.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{2, 4}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.FilterTo expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_ShuffleTo(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    list2 := list.ShuffleTo()
+    if list == list2 {
+        t.Fatalf("test List.ShuffleTo, should return a new list")
+    }
+    actual := []int{}
+    for v := range list2.Iter() {
+        actual = append(actual, v)
+    }
+    sort.Ints(actual)
+    if !slices.Equal([]int{1, 2, 3, 4, 5}, actual) {
+        t.Fatalf("test List.ShuffleSelf, should be shuffled")
+    }
+}
+
+func TestList_Clear(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    list.Clear()
+    actual := []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
+    if len(actual) != 0 {
+        t.Fatalf("test List.Clear, list should be empty")
+    }
+}
+
+func TestList_IterBackward(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    actual := []int{}
+    for v := range list.IterBackward() {
+        actual = append(actual, v)
+    }
+    expect := []int{5, 4, 3, 2, 1}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.IterBackward expect: %v, actual: %v", expect, actual)
     }
 }
 
