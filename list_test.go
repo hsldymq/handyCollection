@@ -129,7 +129,7 @@ func TestList_Pop(t *testing.T) {
     }
     expect := 3
     if expect != actual {
-        t.Fatalf("test List.Shift expect: %v, actual: %v", expect, actual)
+        t.Fatalf("test List.Pop expect: %v, actual: %v", expect, actual)
     }
 
     actual, ok = list.Pop()
@@ -138,7 +138,7 @@ func TestList_Pop(t *testing.T) {
     }
     expect = 2
     if expect != actual {
-        t.Fatalf("test List.Shift expect: %v, actual: %v", expect, actual)
+        t.Fatalf("test List.Pop expect: %v, actual: %v", expect, actual)
     }
 
     actual, ok = list.Pop()
@@ -147,7 +147,7 @@ func TestList_Pop(t *testing.T) {
     }
     expect = 1
     if expect != actual {
-        t.Fatalf("test List.Shift expect: %v, actual: %v", expect, actual)
+        t.Fatalf("test List.Pop expect: %v, actual: %v", expect, actual)
     }
 
     _, ok = list.Pop()
@@ -191,6 +191,71 @@ func TestList_Shift(t *testing.T) {
     if ok {
         t.Fatalf("test List.Shift, returned ok is not false")
     }
+}
+
+func TestList_Get(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+
+    actual, ok := list.Get(2)
+    if !ok {
+        t.Fatalf("test List.Get, returned ok is not true")
+    }
+    expect := 3
+    if expect != actual {
+        t.Fatalf("test List.Shift expect: %v, actual: %v", expect, actual)
+    }
+
+    _, ok = list.Get(-1)
+    if ok {
+        t.Fatalf("test List.Get, returned ok is not false")
+    }
+
+    _, ok = list.Get(5)
+    if ok {
+        t.Fatalf("test List.Get, returned ok is not false")
+    }
+}
+
+func TestList_Find(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+    list := NewList(
+        &person{"Alice", 20},
+        &person{"Bob", 30},
+        &person{"Eve", 40},
+    )
+
+    p, ok := list.Find(func(p *person) bool {
+        return p.Name == "Bob"
+    })
+    if !ok {
+        t.Fatalf("test List.Find, returned ok should be true")
+    }
+    expect := person{"Bob", 30}
+    if expect != *p {
+        t.Fatalf("test List.Find expect: %v, actual: %v", expect, *p)
+    }
+
+    _, ok = list.Find(func(p *person) bool {
+        return p.Name == "Alex"
+    })
+    if ok {
+        t.Fatalf("test List.Find, returned ok should be false")
+    }
+}
+
+func TestList_FindOrDefault(t *testing.T) {
+
+}
+
+func TestList_FindLast(t *testing.T) {
+
+}
+
+func TestList_FindLastOrDefault(t *testing.T) {
+
 }
 
 func TestList_IndexOf(t *testing.T) {
