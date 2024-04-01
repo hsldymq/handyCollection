@@ -195,7 +195,7 @@ func (l *List[T]) ShuffleTo() *List[T] {
 
 func (l *List[T]) Clone() *List[T] {
     clonedList := NewList[T]()
-    clonedList.elems = make([]T, 0, l.Count())
+    clonedList.elems = make([]T, l.Count())
     copy(clonedList.elems, l.elems)
     return clonedList
 }
