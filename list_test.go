@@ -686,3 +686,26 @@ func TestList_SkipLast(t *testing.T) {
         t.Fatalf("test List.SkipLast expect: %v, actual: %v", expect, actual)
     }
 }
+
+func TestList_Distinct(t *testing.T) {
+    list := NewList(1, 1, 2, 2, 3, 3, 4, 4, 5, 5)
+    actual := []int{}
+    for v := range list.Distinct().Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{1, 2, 3, 4, 5}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Distinct expect: %v, actual: %v", expect, actual)
+    }
+
+    f := func() {}
+    list2 := NewList(f, f, f)
+    actual2 := []func(){}
+    for v := range list2.Distinct().Iter() {
+        actual2 = append(actual2, v)
+    }
+    expect2 := 3
+    if expect2 != len(actual2) {
+        t.Fatalf("test List.Distinct, should return 3 elements")
+    }
+}
