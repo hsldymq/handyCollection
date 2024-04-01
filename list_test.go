@@ -3,6 +3,7 @@ package handy
 import (
     "github.com/hsldymq/goiter"
     "slices"
+    "strings"
     "testing"
 )
 
@@ -348,6 +349,62 @@ func TestList_IndexOf(t *testing.T) {
     expect = -1
     if expect != actual {
         t.Fatalf("test List.IndexOf expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_Contains(t *testing.T) {
+    list := NewList[int](1, 2, 3, 4, 5)
+    if !list.Contains(3) {
+        t.Fatalf("test List.Contains, 3 should be in list")
+    }
+
+    if list.Contains(6) {
+        t.Fatalf("test List.Contains, 6 should not be in list")
+    }
+}
+
+func TestList_Sort(t *testing.T) {
+    list := NewList[int](3, 1, 2, 5, 4)
+    list.Sort(func(a, b int) int {
+        return a - b
+    })
+    actual := []int{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{1, 2, 3, 4, 5}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Sort expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_StableSort(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+
+    list := NewList(
+        person{"Alice", 20},
+        person{"Bob", 30},
+        person{"Eve", 40},
+        person{"Bob", 50},
+    )
+    list.StableSort(func(a, b person) int {
+        return strings.Compare(a.Name, b.Name)
+    })
+    actual := []person{}
+    for v := range list.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []person{
+        {"Alice", 20},
+        {"Bob", 30},
+        {"Bob", 50},
+        {"Eve", 40},
+    }
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.StableSort expect: %v, actual: %v", expect, actual)
     }
 }
 
