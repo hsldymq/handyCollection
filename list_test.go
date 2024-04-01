@@ -688,6 +688,7 @@ func TestList_SkipLast(t *testing.T) {
 }
 
 func TestList_Distinct(t *testing.T) {
+    // case 1
     list := NewList(1, 1, 2, 2, 3, 3, 4, 4, 5, 5)
     actual := []int{}
     for v := range list.Distinct().Iter() {
@@ -698,6 +699,7 @@ func TestList_Distinct(t *testing.T) {
         t.Fatalf("test List.Distinct expect: %v, actual: %v", expect, actual)
     }
 
+    // case 2
     f := func() {}
     list2 := NewList(f, f, f)
     actual2 := []func(){}
@@ -708,4 +710,38 @@ func TestList_Distinct(t *testing.T) {
     if expect2 != len(actual2) {
         t.Fatalf("test List.Distinct, should return 3 elements")
     }
+
+    // case 3
+    list3 := NewList(
+        &personWithID{ID: "1", Name: "Alice"},
+        &personWithID{ID: "2", Name: "Bob"},
+        &personWithID{ID: "3", Name: "Eve"},
+        &personWithID{ID: "2", Name: "Robert"},
+        &personWithID{ID: "1", Name: "Ellie"},
+        &personWithID{ID: "3", Name: "Eva"},
+    )
+    actual3 := []personWithID{}
+    for v := range list3.Distinct().Iter() {
+        actual3 = append(actual3, *v)
+        if v.Name == "Ellie" {
+            break
+        }
+    }
+    expect3 := []personWithID{
+        {ID: "1", Name: "Alice"},
+        {ID: "2", Name: "Bob"},
+        {ID: "3", Name: "Eve"},
+    }
+    if !slices.Equal(expect3, actual3) {
+        t.Fatalf("test List.Distinct expect: %v, actual: %v", expect3, actual3)
+    }
+}
+
+type personWithID struct {
+    ID   string
+    Name string
+}
+
+func (p *personWithID) ComparingKey() any {
+    return p.ID
 }
