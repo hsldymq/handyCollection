@@ -225,6 +225,7 @@ func TestList_Find(t *testing.T) {
         &person{"Alice", 20},
         &person{"Bob", 30},
         &person{"Eve", 40},
+        &person{"Bob", 50},
     )
 
     p, ok := list.Find(func(p *person) bool {
@@ -247,15 +248,92 @@ func TestList_Find(t *testing.T) {
 }
 
 func TestList_FindOrDefault(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+    list := NewList(
+        &person{"Alice", 20},
+        &person{"Bob", 30},
+        &person{"Eve", 40},
+        &person{"Bob", 50},
+    )
 
+    p := list.FindOrDefault(func(p *person) bool {
+        return p.Name == "Bob"
+    }, &person{"Default", 40})
+    expect := person{"Bob", 30}
+    if expect != *p {
+        t.Fatalf("test List.Find expect: %v, actual: %v", expect, *p)
+    }
+
+    p = list.FindOrDefault(func(p *person) bool {
+        return p.Name == "Alex"
+    }, &person{"Default", 40})
+    expect = person{"Default", 40}
+    if expect != *p {
+        t.Fatalf("test List.Find expect: %v, actual: %v", expect, *p)
+    }
 }
 
 func TestList_FindLast(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+    list := NewList(
+        &person{"Alice", 20},
+        &person{"Bob", 30},
+        &person{"Eve", 40},
+        &person{"Bob", 50},
+    )
 
+    p, ok := list.FindLast(func(p *person) bool {
+        return p.Name == "Bob"
+    })
+    if !ok {
+        t.Fatalf("test List.Find, returned ok should be true")
+    }
+    expect := person{"Bob", 50}
+    if expect != *p {
+        t.Fatalf("test List.Find expect: %v, actual: %v", expect, *p)
+    }
+
+    _, ok = list.FindLast(func(p *person) bool {
+        return p.Name == "Alex"
+    })
+    if ok {
+        t.Fatalf("test List.Find, returned ok should be false")
+    }
 }
 
 func TestList_FindLastOrDefault(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+    list := NewList(
+        &person{"Alice", 20},
+        &person{"Bob", 30},
+        &person{"Eve", 40},
+        &person{"Bob", 50},
+    )
 
+    p := list.FindLastOrDefault(func(p *person) bool {
+        return p.Name == "Bob"
+    }, &person{"Default", 40})
+    expect := person{"Bob", 50}
+    if expect != *p {
+        t.Fatalf("test List.Find expect: %v, actual: %v", expect, *p)
+    }
+
+    p = list.FindLastOrDefault(func(p *person) bool {
+        return p.Name == "Alex"
+    }, &person{"Default", 80})
+    expect = person{"Default", 80}
+    if expect != *p {
+        t.Fatalf("test List.Find expect: %v, actual: %v", expect, *p)
+    }
 }
 
 func TestList_IndexOf(t *testing.T) {
