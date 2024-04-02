@@ -738,6 +738,114 @@ func TestList_Distinct(t *testing.T) {
     }
 }
 
+func TestList_DistinctBy(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+
+    list := NewList(
+        person{"Alice", 20},
+        person{"Bob", 30},
+        person{"Eve", 40},
+        person{"Bob", 50},
+        person{"Robert", 60},
+    )
+    e := list.DistinctBy(func(p person) any {
+        return p.Name
+    })
+    actual := []person{}
+    for v := range e.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []person{
+        {"Alice", 20},
+        {"Bob", 30},
+        {"Eve", 40},
+        {"Robert", 60},
+    }
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.DistinctBy expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_Union(t *testing.T) {
+    list1 := NewList(1, 2, 3, 4, 5)
+    list2 := NewList(3, 4, 5, 6, 7)
+    actual := []int{}
+    for v := range list1.Union(list2).Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{1, 2, 3, 4, 5, 6, 7}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Union expect: %v, actual: %v", expect, actual)
+    }
+
+    p1 := NewList(
+        &personWithID{"1", "Alice"},
+        &personWithID{"2", "Bob"},
+        &personWithID{"3", "Eve"},
+        &personWithID{"4", "Charlie"},
+    )
+    p2 := NewList(
+        &personWithID{"3", "David"},
+        &personWithID{"4", "Frank"},
+        &personWithID{"5", "George"},
+        &personWithID{"6", "Helen"},
+    )
+    actual2 := []personWithID{}
+    for v := range p1.Union(p2).Iter() {
+        actual2 = append(actual2, *v)
+    }
+    expect2 := []personWithID{
+        {"1", "Alice"},
+        {"2", "Bob"},
+        {"3", "Eve"},
+        {"4", "Charlie"},
+        {"5", "George"},
+        {"6", "Helen"},
+    }
+    if !slices.Equal(expect2, actual2) {
+        t.Fatalf("test List.Union expect: %v, actual: %v", expect2, actual2)
+    }
+}
+
+func TestList_UnionBy(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+
+    list1 := NewList(
+        person{"Alice", 20},
+        person{"Bob", 30},
+        person{"Eve", 40},
+    )
+    list2 := NewList(
+        person{"Bob", 60},
+        person{"Eve", 70},
+        person{"Frank", 50},
+        person{"George", 60},
+    )
+    e := list1.UnionBy(list2, func(p person) any {
+        return p.Name
+    })
+    actual := []person{}
+    for v := range e.Iter() {
+        actual = append(actual, v)
+    }
+    expect := []person{
+        {"Alice", 20},
+        {"Bob", 30},
+        {"Eve", 40},
+        {"Frank", 50},
+        {"George", 60},
+    }
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.UnionBy expect: %v, actual: %v", expect, actual)
+    }
+}
+
 type personWithID struct {
     ID   string
     Name string
