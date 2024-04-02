@@ -162,7 +162,7 @@ func TestIntersect(t *testing.T) {
 
 func TestExcept(t *testing.T) {
     // case 1
-    case1S1 := goiter.SliceElem([]int{1, 2, 3, 4, 5})
+    case1S1 := goiter.SliceElem([]int{1, 2, 3, 4, 5, 3})
     case1S2 := goiter.SliceElem([]int{4, 5, 6, 7, 8})
     case1E := except[int](newEnumerator(case1S1), newEnumerator(case1S2))
     case1Actual := make([]int, 0, 3)
