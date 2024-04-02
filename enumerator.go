@@ -85,11 +85,11 @@ func (e *Enumerator[T]) IntersectBy(target Enumerable[T], keySelector func(T) an
     return intersectBy(e, target, keySelector)
 }
 
-func (e *Enumerator[T]) Expect(target Enumerable[T]) Enumerable[T] {
+func (e *Enumerator[T]) Except(target Enumerable[T]) Enumerable[T] {
     return except(e, target)
 }
 
-func (e *Enumerator[T]) ExpectBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
+func (e *Enumerator[T]) ExceptBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
     return exceptBy(e, target, keySelector)
 }
 

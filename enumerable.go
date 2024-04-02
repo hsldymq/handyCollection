@@ -22,8 +22,8 @@ type Enumerable[T any] interface {
     UnionBy(Enumerable[T], func(T) any) Enumerable[T]
     Intersect(Enumerable[T]) Enumerable[T]
     IntersectBy(Enumerable[T], func(T) any) Enumerable[T]
-    Expect(Enumerable[T]) Enumerable[T]
-    ExpectBy(Enumerable[T], func(T) any) Enumerable[T]
+    Except(Enumerable[T]) Enumerable[T]
+    ExceptBy(Enumerable[T], func(T) any) Enumerable[T]
     SequenceEqual(Enumerable[T]) bool
     SequenceEqualBy(Enumerable[T], func(T) any) bool
     Concat(...Iterable[T]) Enumerable[T]

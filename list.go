@@ -306,11 +306,11 @@ func (l *List[T]) IntersectBy(target Enumerable[T], keySelector func(T) any) Enu
     return intersectBy(l, target, keySelector)
 }
 
-func (l *List[T]) Expect(target Enumerable[T]) Enumerable[T] {
+func (l *List[T]) Except(target Enumerable[T]) Enumerable[T] {
     return except(l, target)
 }
 
-func (l *List[T]) ExpectBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
+func (l *List[T]) ExceptBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
     return exceptBy(l, target, keySelector)
 }
 
