@@ -846,6 +846,93 @@ func TestList_UnionBy(t *testing.T) {
     }
 }
 
+func TestList_Intersect(t *testing.T) {
+    list1 := NewList(1, 2, 3, 4, 5)
+    list2 := NewList(3, 4, 5, 6, 7)
+    actual := []int{}
+    for v := range list1.Intersect(list2).Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{3, 4, 5}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Intersect expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_IntersectBy(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+    list1 := NewList(
+        &person{"Alice", 20},
+        &person{"Bob", 30},
+        &person{"Eve", 40},
+    )
+    list2 := NewList(
+        &person{"Bob", 60},
+        &person{"Eve", 70},
+        &person{"Frank", 50},
+    )
+    e := list1.IntersectBy(list2, func(p *person) any {
+        return p.Name
+    })
+    actual := []person{}
+    for v := range e.Iter() {
+        actual = append(actual, *v)
+    }
+    expect := []person{
+        {"Bob", 30},
+        {"Eve", 40},
+    }
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.IntersectBy expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_Except(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+    list1 := NewList(
+        &person{"Alice", 20},
+        &person{"Bob", 30},
+        &person{"Eve", 40},
+    )
+    list2 := NewList(
+        &person{"Bob", 60},
+        &person{"Eve", 70},
+        &person{"Frank", 50},
+    )
+    e := list1.ExceptBy(list2, func(p *person) any {
+        return p.Name
+    })
+    actual := []person{}
+    for v := range e.Iter() {
+        actual = append(actual, *v)
+    }
+    expect := []person{
+        {"Alice", 20},
+    }
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.ExceptBy expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_ExceptBy(t *testing.T) {
+    list1 := NewList(1, 2, 3, 4, 5)
+    list2 := NewList(3, 4, 5, 6, 7)
+    actual := []int{}
+    for v := range list1.Except(list2).Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{1, 2}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Intersect expect: %v, actual: %v", expect, actual)
+    }
+}
+
 type personWithID struct {
     ID   string
     Name string
