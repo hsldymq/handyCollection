@@ -1,14 +1,14 @@
 package handy
 
 import (
-	"cmp"
-	"github.com/hsldymq/goiter"
+    "cmp"
+    "github.com/hsldymq/goiter"
 )
 
-func Order[T cmp.Ordered](e Iterable[T]) Enumerable[T] {
-	return newEnumerator(goiter.Order(e.Iter()))
+func Order[T cmp.Ordered](e Iterable[T], desc ...bool) Enumerable[T] {
+    return newEnumerator(goiter.Order(e.Iter(), desc...))
 }
 
 func orderBy[T any](e Iterable[T], cmp func(T, T) int) Enumerable[T] {
-	return newEnumerator(goiter.OrderBy(e.Iter(), cmp))
+    return newEnumerator(goiter.OrderBy(e.Iter(), cmp))
 }
