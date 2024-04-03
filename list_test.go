@@ -933,6 +933,74 @@ func TestList_ExceptBy(t *testing.T) {
     }
 }
 
+func TestList_SequenceEqual(t *testing.T) {
+    list1 := NewList(1, 2, 3, 4, 5)
+    list2 := NewList(1, 2, 3, 4, 5)
+    if !list1.SequenceEqual(list2) {
+        t.Fatalf("test List.SequenceEqual failed, not true")
+    }
+}
+
+func TestList_SequenceEqualBy(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+    list1 := NewList(
+        person{"Alice", 20},
+        person{"Bob", 30},
+        person{"Eve", 40},
+    )
+    list2 := NewList(
+        person{"Alice", 50},
+        person{"Bob", 60},
+        person{"Eve", 70},
+    )
+    if !list1.SequenceEqualBy(list2, func(p person) any { return p.Name }) {
+        t.Fatalf("test List.SequenceEqual failed, not true")
+    }
+}
+
+func TestList_Concat(t *testing.T) {
+    list := NewList(1, 2, 3)
+
+    actual := []int{}
+    for v := range list.Concat(NewList(4, 5, 6)).Iter() {
+        actual = append(actual, v)
+    }
+    expect := []int{1, 2, 3, 4, 5, 6}
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.Concat expect: %v, actual: %v", expect, actual)
+    }
+}
+
+func TestList_OrderBy(t *testing.T) {
+    type person struct {
+        Name string
+        Age  int
+    }
+
+    list := NewList(
+        person{"Bob", 30},
+        person{"Alice", 20},
+        person{"Eve", 40},
+    )
+    actual := []person{}
+    for v := range list.OrderBy(func(a, b person) int {
+        return strings.Compare(a.Name, b.Name)
+    }).Iter() {
+        actual = append(actual, v)
+    }
+    expect := []person{
+        {"Alice", 20},
+        {"Bob", 30},
+        {"Eve", 40},
+    }
+    if !slices.Equal(expect, actual) {
+        t.Fatalf("test List.OrderBy expect: %v, actual: %v", expect, actual)
+    }
+}
+
 type personWithID struct {
     ID   string
     Name string
