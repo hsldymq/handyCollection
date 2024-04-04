@@ -5,8 +5,12 @@ import (
     "iter"
 )
 
-func NewSliceIterable[T any](slice []T) Iterable[T] {
+func NewIterableFromSlice[T any](slice []T) Iterable[T] {
     return &sliceIterable[T]{s: slice}
+}
+
+func NewIterableFromSeq[TIter goiter.SeqX[T], T any](iter TIter) Iterable[T] {
+    return &seqIterable[TIter, T]{iter: iter}
 }
 
 type Iterable[T any] interface {
@@ -19,4 +23,12 @@ type sliceIterable[T any] struct {
 
 func (si *sliceIterable[T]) Iter() iter.Seq[T] {
     return goiter.SliceElem(si.s).Seq()
+}
+
+type seqIterable[TIter goiter.SeqX[T], T any] struct {
+    iter TIter
+}
+
+func (si *seqIterable[TIter, T]) Iter() iter.Seq[T] {
+    return iter.Seq[T](si.iter)
 }

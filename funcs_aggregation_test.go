@@ -17,7 +17,7 @@ func TestReduce(t *testing.T) {
 }
 
 func TestScan(t *testing.T) {
-    iterable := NewSliceIterable([]int{1, 2, 3, 4, 5})
+    iterable := NewIterableFromSlice([]int{1, 2, 3, 4, 5})
     e := Scan(iterable, 0, func(acc, each int) int {
         return acc + each
     })
