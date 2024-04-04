@@ -151,6 +151,9 @@ func TestGroupJoin(t *testing.T) {
             }
         }
         actual = append(actual, r)
+        if r.ID == "2" {
+            break
+        }
     }
     expect := []res{
         {"1", "Alice", "Math,Physics"},
