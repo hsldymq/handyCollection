@@ -8,11 +8,11 @@ import (
 )
 
 func union[T any](e1, e2 Iterable[T]) Enumerable[T] {
-    return distinct[T](newEnumerator(goiter.Concat(e1.Iter(), e2.Iter())))
+    return distinct[T](NewEnumerator(goiter.Concat(e1.Iter(), e2.Iter())))
 }
 
 func unionBy[T any](e1, e2 Iterable[T], keySelector func(T) any) Enumerable[T] {
-    return distinctBy(newEnumerator(goiter.Concat(e1.Iter(), e2.Iter())), keySelector)
+    return distinctBy(NewEnumerator(goiter.Concat(e1.Iter(), e2.Iter())), keySelector)
 }
 
 func intersect[T any](e1, e2 Iterable[T]) Enumerable[T] {
@@ -23,7 +23,7 @@ func intersect[T any](e1, e2 Iterable[T]) Enumerable[T] {
     } else if typeComparable {
         return intersectBy(e1, e2, func(v T) any { return v })
     } else {
-        return newEnumerator(goiter.Empty[T]())
+        return NewEnumerator(goiter.Empty[T]())
     }
 }
 
@@ -62,7 +62,7 @@ func intersectBy[T any](e1, e2 Iterable[T], keySelector func(T) any) Enumerable[
             }
         }
     }
-    return newEnumerator(seq)
+    return NewEnumerator(seq)
 }
 
 func except[T any](e1, e2 Iterable[T]) Enumerable[T] {
@@ -73,7 +73,7 @@ func except[T any](e1, e2 Iterable[T]) Enumerable[T] {
     } else if typeComparable {
         return exceptBy(e1, e2, func(v T) any { return v })
     } else {
-        return newEnumerator(e1.Iter())
+        return NewEnumerator(e1.Iter())
     }
 }
 
@@ -113,5 +113,5 @@ func exceptBy[T any](e1, e2 Iterable[T], keySelector func(T) any) Enumerable[T] 
         }
     }
 
-    return newEnumerator(seq)
+    return NewEnumerator(seq)
 }

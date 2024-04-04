@@ -13,7 +13,7 @@ func TestUnion(t *testing.T) {
     // case 1
     case1S1 := goiter.SliceElem([]int{1, 2, 3, 5, 3})
     case1S2 := goiter.SliceElem([]int{3, 4, 5})
-    case1E := union[int](newEnumerator(case1S1), newEnumerator(case1S2))
+    case1E := union[int](NewEnumerator(case1S1), NewEnumerator(case1S2))
     case1Actual := make([]int, 0, 5)
     for v := range case1E.Iter() {
         case1Actual = append(case1Actual, v)
@@ -35,7 +35,7 @@ func TestUnion(t *testing.T) {
         {"Bob"},
         {"Charlie"},
     })
-    case2E := union[person](newEnumerator(case2S1), newEnumerator(case2S2))
+    case2E := union[person](NewEnumerator(case2S1), NewEnumerator(case2S2))
     case2Actual := make([]person, 0, 5)
     for v := range case2E.Iter() {
         case2Actual = append(case2Actual, v)
@@ -56,7 +56,7 @@ func TestUnion(t *testing.T) {
     }
     case3S1 := goiter.SliceElem([]func() int{funcs[0], funcs[1]})
     case3S2 := goiter.SliceElem([]func() int{funcs[1], funcs[0]})
-    case3E := union[func() int](newEnumerator(case3S1), newEnumerator(case3S2))
+    case3E := union[func() int](NewEnumerator(case3S1), NewEnumerator(case3S2))
     case3Actual := make([]func() int, 0, 2)
     for v := range case3E.Iter() {
         case3Actual = append(case3Actual, v)
@@ -80,7 +80,7 @@ func TestUnionBy(t *testing.T) {
         {"Bob", "Computer programmer"},
         {"Charlie", "Uber driver"},
     })
-    e1 := unionBy[person](newEnumerator(s1), newEnumerator(s2), func(p person) any {
+    e1 := unionBy[person](NewEnumerator(s1), NewEnumerator(s2), func(p person) any {
         return p.name
     })
     actual := make([]person, 0, 5)
@@ -101,7 +101,7 @@ func TestIntersect(t *testing.T) {
     // case 1
     case1S1 := goiter.SliceElem([]int{1, 2, 3, 5, 3})
     case1S2 := goiter.SliceElem([]int{5, 4, 3})
-    case1E := intersect[int](newEnumerator(case1S1), newEnumerator(case1S2))
+    case1E := intersect[int](NewEnumerator(case1S1), NewEnumerator(case1S2))
     case1Actual := make([]int, 0, 2)
     for v := range case1E.Iter() {
         case1Actual = append(case1Actual, v)
@@ -126,7 +126,7 @@ func TestIntersect(t *testing.T) {
         {"5", "Ivy"},
         {"6", "Lily"},
     })
-    case2E := intersect[*personWithID](newEnumerator(case2S1), newEnumerator(case2S2))
+    case2E := intersect[*personWithID](NewEnumerator(case2S1), NewEnumerator(case2S2))
     case2Actual := make([]personWithID, 0, 3)
     for v := range case2E.Iter() {
         case2Actual = append(case2Actual, *v)
@@ -150,7 +150,7 @@ func TestIntersect(t *testing.T) {
     }
     case3S1 := goiter.SliceElem([]func() int{funcs[0], funcs[1]})
     case3S2 := goiter.SliceElem([]func() int{funcs[1], funcs[0]})
-    case3E := intersect[func() int](newEnumerator(case3S1), newEnumerator(case3S2))
+    case3E := intersect[func() int](NewEnumerator(case3S1), NewEnumerator(case3S2))
     case3Actual := make([]func() int, 0, 2)
     for v := range case3E.Iter() {
         case3Actual = append(case3Actual, v)
@@ -164,7 +164,7 @@ func TestExcept(t *testing.T) {
     // case 1
     case1S1 := goiter.SliceElem([]int{1, 2, 3, 4, 5, 3})
     case1S2 := goiter.SliceElem([]int{4, 5, 6, 7, 8})
-    case1E := except[int](newEnumerator(case1S1), newEnumerator(case1S2))
+    case1E := except[int](NewEnumerator(case1S1), NewEnumerator(case1S2))
     case1Actual := make([]int, 0, 3)
     for v := range case1E.Iter() {
         case1Actual = append(case1Actual, v)
@@ -186,7 +186,7 @@ func TestExcept(t *testing.T) {
         {"5", "Ivy"},
         {"6", "Lily"},
     })
-    case2E := except[*personWithID](newEnumerator(case2S1), newEnumerator(case2S2))
+    case2E := except[*personWithID](NewEnumerator(case2S1), NewEnumerator(case2S2))
     case2Actual := make([]personWithID, 0, 3)
     for v := range case2E.Iter() {
         case2Actual = append(case2Actual, *v)
@@ -210,7 +210,7 @@ func TestExcept(t *testing.T) {
     }
     case3S1 := goiter.SliceElem([]func() int{funcs[0], funcs[1]})
     case3S2 := goiter.SliceElem([]func() int{funcs[0], funcs[1]})
-    case3E := except[func() int](newEnumerator(case3S1), newEnumerator(case3S2))
+    case3E := except[func() int](NewEnumerator(case3S1), NewEnumerator(case3S2))
     case3Actual := make([]func() int, 0, 2)
     for v := range case3E.Iter() {
         case3Actual = append(case3Actual, v)

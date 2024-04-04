@@ -8,7 +8,7 @@ import (
 )
 
 func TestOrder(t *testing.T) {
-    e := newEnumerator(goiter.SliceElem([]int{3, 2, 1}))
+    e := NewEnumerator(goiter.SliceElem([]int{3, 2, 1}))
     actual := []int{}
     for v := range Order[int](e).Iter() {
         actual = append(actual, v)
@@ -18,7 +18,7 @@ func TestOrder(t *testing.T) {
         t.Fatalf("test Order, expect: %v, actual: %v", expect, actual)
     }
 
-    e = newEnumerator(goiter.SliceElem([]int{1, 2, 3}))
+    e = NewEnumerator(goiter.SliceElem([]int{1, 2, 3}))
     actual = []int{}
     for v := range Order[int](e, true).Iter() {
         actual = append(actual, v)
@@ -34,7 +34,7 @@ func TestOrderBy(t *testing.T) {
         Name string
         Age  int
     }
-    e := newEnumerator(goiter.SliceElem([]person{
+    e := NewEnumerator(goiter.SliceElem([]person{
         {"Alice", 20},
         {"Charlie", 22},
         {"Bob", 18},

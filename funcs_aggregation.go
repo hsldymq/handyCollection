@@ -9,5 +9,5 @@ func Reduce[T, R any](e Iterable[T], init R, reducer func(R, T) R) R {
 }
 
 func Scan[T, R any](e Iterable[T], init R, folder func(R, T) R) Enumerable[R] {
-    return newEnumerator(goiter.Scan(e.Iter(), init, folder))
+    return NewEnumerator(goiter.Scan(e.Iter(), init, folder))
 }

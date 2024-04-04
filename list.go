@@ -239,7 +239,7 @@ func (l *List[T]) Filter(predicate func(T) bool) Enumerable[T] {
 }
 
 func (l *List[T]) Take(n int) Enumerable[T] {
-    return newEnumerator(goiter.Take(l.Iter(), n))
+    return NewEnumerator(goiter.Take(l.Iter(), n))
 }
 
 func (l *List[T]) TakeLast(n int) Enumerable[T] {
@@ -257,11 +257,11 @@ func (l *List[T]) TakeLast(n int) Enumerable[T] {
         }
     }
 
-    return newEnumerator(iterator)
+    return NewEnumerator(iterator)
 }
 
 func (l *List[T]) Skip(n int) Enumerable[T] {
-    return newEnumerator(goiter.Skip(l.Iter(), n))
+    return NewEnumerator(goiter.Skip(l.Iter(), n))
 }
 
 func (l *List[T]) SkipLast(n int) Enumerable[T] {
@@ -279,7 +279,7 @@ func (l *List[T]) SkipLast(n int) Enumerable[T] {
         }
     }
 
-    return newEnumerator(iterator)
+    return NewEnumerator(iterator)
 }
 
 func (l *List[T]) Distinct() Enumerable[T] {
