@@ -5,9 +5,9 @@ import (
     "iter"
 )
 
-type Combined[T1, T2 any] struct {
-    First  T1
-    Second T2
+type Joined[T1, T2 any] struct {
+    Outer T1
+    Inner T2
 }
 
 func Join[OuterT, InnerT any, K comparable](
@@ -15,8 +15,8 @@ func Join[OuterT, InnerT any, K comparable](
     inner Iterable[InnerT],
     outerKeySelector func(OuterT) K,
     innerKeySelector func(InnerT) K,
-) Enumerable[*Combined[OuterT, InnerT]] {
-    seq := func(yield func(*Combined[OuterT, InnerT]) bool) {
+) Enumerable[*Joined[OuterT, InnerT]] {
+    seq := func(yield func(*Joined[OuterT, InnerT]) bool) {
         next, stop := iter.Pull(outer.Iter())
         defer stop()
         outerElem, ok := next()
@@ -29,9 +29,9 @@ func Join[OuterT, InnerT any, K comparable](
             innerElems, hasAny := group[outerKeySelector(outerElem)]
             if hasAny {
                 for _, innerElem := range innerElems {
-                    combined := &Combined[OuterT, InnerT]{
-                        First:  outerElem,
-                        Second: innerElem,
+                    combined := &Joined[OuterT, InnerT]{
+                        Outer: outerElem,
+                        Inner: innerElem,
                     }
                     if !yield(combined) {
                         return
@@ -52,8 +52,8 @@ func JoinAs[OuterT, InnerT any, K comparable, ResultT any](
     transformer func(OuterT, InnerT) ResultT,
 ) Enumerable[ResultT] {
     joinedSeq := Join(outer, inner, outerKeySelector, innerKeySelector).Iter()
-    transformedSeq := goiter.Transform(joinedSeq, func(combined *Combined[OuterT, InnerT]) ResultT {
-        return transformer(combined.First, combined.Second)
+    transformedSeq := goiter.Transform(joinedSeq, func(combined *Joined[OuterT, InnerT]) ResultT {
+        return transformer(combined.Outer, combined.Inner)
     })
 
     return NewEnumerator(transformedSeq)
@@ -64,8 +64,8 @@ func GroupJoin[OuterT, InnerT any, K comparable](
     inner Iterable[InnerT],
     outerKeySelector func(OuterT) K,
     innerKeySelector func(InnerT) K,
-) Enumerable[*Combined[OuterT, Enumerable[InnerT]]] {
-    seq := func(yield func(*Combined[OuterT, Enumerable[InnerT]]) bool) {
+) Enumerable[*Joined[OuterT, Enumerable[InnerT]]] {
+    seq := func(yield func(joined *Joined[OuterT, Enumerable[InnerT]]) bool) {
         next, stop := iter.Pull(outer.Iter())
         defer stop()
         outerElem, ok := next()
@@ -77,9 +77,9 @@ func GroupJoin[OuterT, InnerT any, K comparable](
         for ok {
             innerElems, hasAny := group[outerKeySelector(outerElem)]
             if hasAny {
-                combined := &Combined[OuterT, Enumerable[InnerT]]{
-                    First:  outerElem,
-                    Second: NewEnumerator(goiter.SliceElem(innerElems)),
+                combined := &Joined[OuterT, Enumerable[InnerT]]{
+                    Outer: outerElem,
+                    Inner: NewEnumerator(goiter.SliceElem(innerElems)),
                 }
                 if !yield(combined) {
                     return
@@ -89,21 +89,6 @@ func GroupJoin[OuterT, InnerT any, K comparable](
         }
     }
     return NewEnumerator(seq)
-}
-
-func GroupJoinAs[OuterT, InnerT any, K comparable, ResultT any](
-    outer Iterable[OuterT],
-    inner Iterable[InnerT],
-    outerKeySelector func(OuterT) K,
-    innerKeySelector func(InnerT) K,
-    transformer func(OuterT, Enumerable[InnerT]) ResultT,
-) Enumerable[ResultT] {
-    joinedSeq := GroupJoin(outer, inner, outerKeySelector, innerKeySelector).Iter()
-    transformedSeq := goiter.Transform(joinedSeq, func(combined *Combined[OuterT, Enumerable[InnerT]]) ResultT {
-        return transformer(combined.First, combined.Second)
-    })
-
-    return NewEnumerator(transformedSeq)
 }
 
 func groupIterableToMap[T any, K comparable](iterable Iterable[T], keySelector func(T) K) map[any][]T {
