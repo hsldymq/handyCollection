@@ -35,11 +35,3 @@ func ToList[T any](e Iterable[T]) *List[T] {
     }
     return l
 }
-
-func ToListBy[T, R any](e Iterable[T], transformer func(T) R) *List[R] {
-    l := NewList[R]()
-    for each := range e.Iter() {
-        l.Add(transformer(each))
-    }
-    return l
-}
