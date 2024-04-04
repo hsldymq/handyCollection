@@ -11,8 +11,8 @@ type Combined[T1, T2 any] struct {
 }
 
 func Join[OuterT, InnerT any, K comparable](
-    outer Enumerable[OuterT],
-    inner Enumerable[InnerT],
+    outer Iterable[OuterT],
+    inner Iterable[InnerT],
     outerKeySelector func(OuterT) K,
     innerKeySelector func(InnerT) K,
 ) Enumerable[*Combined[OuterT, InnerT]] {
@@ -45,8 +45,8 @@ func Join[OuterT, InnerT any, K comparable](
 }
 
 func JoinAs[OuterT, InnerT any, K comparable, ResultT any](
-    outer Enumerable[OuterT],
-    inner Enumerable[InnerT],
+    outer Iterable[OuterT],
+    inner Iterable[InnerT],
     outerKeySelector func(OuterT) K,
     innerKeySelector func(InnerT) K,
     transformer func(OuterT, InnerT) ResultT,
@@ -60,8 +60,8 @@ func JoinAs[OuterT, InnerT any, K comparable, ResultT any](
 }
 
 func GroupJoin[OuterT, InnerT any, K comparable](
-    outer Enumerable[OuterT],
-    inner Enumerable[InnerT],
+    outer Iterable[OuterT],
+    inner Iterable[InnerT],
     outerKeySelector func(OuterT) K,
     innerKeySelector func(InnerT) K,
 ) Enumerable[*Combined[OuterT, Enumerable[InnerT]]] {
@@ -92,8 +92,8 @@ func GroupJoin[OuterT, InnerT any, K comparable](
 }
 
 func GroupJoinAs[OuterT, InnerT any, K comparable, ResultT any](
-    outer Enumerable[OuterT],
-    inner Enumerable[InnerT],
+    outer Iterable[OuterT],
+    inner Iterable[InnerT],
     outerKeySelector func(OuterT) K,
     innerKeySelector func(InnerT) K,
     transformer func(OuterT, Enumerable[InnerT]) ResultT,
