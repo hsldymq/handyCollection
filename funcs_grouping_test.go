@@ -52,6 +52,16 @@ func TestJoin(t *testing.T) {
     if !slices.Equal(actual, expect) {
         t.Fatalf("test Join, expect: %v, actual: %v", expect, actual)
     }
+
+    students = NewIterableFromSlice([]student{})
+    e = Join(students, majors, func(s student) string {
+        return s.ID
+    }, func(m studentMajor) string {
+        return m.ID
+    })
+    if e.Count() != 0 {
+        t.Fatalf("test Join, expect: 0, actual: %d", e.Count())
+    }
 }
 
 func TestJoinAs(t *testing.T) {
@@ -160,6 +170,16 @@ func TestGroupJoin(t *testing.T) {
         {"2", "Bob", "English"},
     }
     if !slices.Equal(actual, expect) {
-        t.Fatalf("test Join, expect: %v, actual: %v", expect, actual)
+        t.Fatalf("test GroupJoin, expect: %v, actual: %v", expect, actual)
+    }
+
+    students = NewIterableFromSlice([]student{})
+    e = GroupJoin(students, majors, func(s student) string {
+        return s.ID
+    }, func(m studentMajor) string {
+        return m.ID
+    })
+    if e.Count() != 0 {
+        t.Fatalf("test GroupJoin, expect: 0, actual: %d", e.Count())
     }
 }
