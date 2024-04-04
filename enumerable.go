@@ -1,11 +1,5 @@
 package handy
 
-import "iter"
-
-type Iterable[T any] interface {
-    Iter() iter.Seq[T]
-}
-
 type Enumerable[T any] interface {
     Iterable[T]
     Count() int
