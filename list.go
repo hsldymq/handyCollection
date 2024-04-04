@@ -290,35 +290,35 @@ func (l *List[T]) DistinctBy(keySelector func(T) any) Enumerable[T] {
     return distinctBy(l, keySelector)
 }
 
-func (l *List[T]) Union(target Enumerable[T]) Enumerable[T] {
+func (l *List[T]) Union(target Iterable[T]) Enumerable[T] {
     return union(l, target)
 }
 
-func (l *List[T]) UnionBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
+func (l *List[T]) UnionBy(target Iterable[T], keySelector func(T) any) Enumerable[T] {
     return unionBy(l, target, keySelector)
 }
 
-func (l *List[T]) Intersect(target Enumerable[T]) Enumerable[T] {
+func (l *List[T]) Intersect(target Iterable[T]) Enumerable[T] {
     return intersect(l, target)
 }
 
-func (l *List[T]) IntersectBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
+func (l *List[T]) IntersectBy(target Iterable[T], keySelector func(T) any) Enumerable[T] {
     return intersectBy(l, target, keySelector)
 }
 
-func (l *List[T]) Except(target Enumerable[T]) Enumerable[T] {
+func (l *List[T]) Except(target Iterable[T]) Enumerable[T] {
     return except(l, target)
 }
 
-func (l *List[T]) ExceptBy(target Enumerable[T], keySelector func(T) any) Enumerable[T] {
+func (l *List[T]) ExceptBy(target Iterable[T], keySelector func(T) any) Enumerable[T] {
     return exceptBy(l, target, keySelector)
 }
 
-func (l *List[T]) SequenceEqual(target Enumerable[T]) bool {
+func (l *List[T]) SequenceEqual(target Iterable[T]) bool {
     return sequenceEqual[T](l, target)
 }
 
-func (l *List[T]) SequenceEqualBy(target Enumerable[T], keySelector func(T) any) bool {
+func (l *List[T]) SequenceEqualBy(target Iterable[T], keySelector func(T) any) bool {
     return sequenceEqualBy(l, target, keySelector)
 }
 

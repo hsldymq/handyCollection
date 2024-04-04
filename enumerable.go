@@ -12,14 +12,14 @@ type Enumerable[T any] interface {
     SkipLast(int) Enumerable[T]
     Distinct() Enumerable[T]
     DistinctBy(func(T) any) Enumerable[T]
-    Union(Enumerable[T]) Enumerable[T]
-    UnionBy(Enumerable[T], func(T) any) Enumerable[T]
-    Intersect(Enumerable[T]) Enumerable[T]
-    IntersectBy(Enumerable[T], func(T) any) Enumerable[T]
-    Except(Enumerable[T]) Enumerable[T]
-    ExceptBy(Enumerable[T], func(T) any) Enumerable[T]
-    SequenceEqual(Enumerable[T]) bool
-    SequenceEqualBy(Enumerable[T], func(T) any) bool
+    Union(Iterable[T]) Enumerable[T]
+    UnionBy(Iterable[T], func(T) any) Enumerable[T]
+    Intersect(Iterable[T]) Enumerable[T]
+    IntersectBy(Iterable[T], func(T) any) Enumerable[T]
+    Except(Iterable[T]) Enumerable[T]
+    ExceptBy(Iterable[T], func(T) any) Enumerable[T]
+    SequenceEqual(Iterable[T]) bool
+    SequenceEqualBy(Iterable[T], func(T) any) bool
     Concat(...Iterable[T]) Enumerable[T]
     OrderBy(func(T, T) int) Enumerable[T]
 }
