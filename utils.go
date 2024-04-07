@@ -4,12 +4,10 @@ import (
     "reflect"
 )
 
-func zVal[T any]() T {
-    var v T
-    return v
+func zVal[T any]() (v T) {
+    return
 }
 
 func isTypeComparable[T any]() bool {
-    var v T
-    return reflect.ValueOf(v).Comparable()
+    return reflect.ValueOf(zVal[T]()).Comparable()
 }
