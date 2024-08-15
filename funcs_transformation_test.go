@@ -25,7 +25,7 @@ func TestTransform(t *testing.T) {
 func TestTransformExpand(t *testing.T) {
     list := NewList([]int{1, 2, 3}, []int{4, 5, 6}, []int{7, 8, 9})
     e := TransformExpand(list, func(each []int) Iterable[int] {
-        return NewEnumerator(goiter.SliceElem(each))
+        return NewEnumerator(goiter.SliceElems(each))
     })
     actual := []int{}
     for v := range e.Iter() {

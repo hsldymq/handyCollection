@@ -7,7 +7,7 @@ import (
 )
 
 func TestReduce(t *testing.T) {
-    list := NewIterableFromSeq(goiter.SliceElem([]int{1, 2, 3, 4, 5}))
+    list := NewIterableFromSeq(goiter.SliceElems([]int{1, 2, 3, 4, 5}))
     actual := Reduce(list, 0, func(acc, each int) int {
         return acc + each
     })
