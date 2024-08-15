@@ -205,11 +205,11 @@ func (l *List[T]) Clear() {
 }
 
 func (l *List[T]) IterBackward() iter.Seq[T] {
-    return goiter.SliceSourceElem(func() []T { return l.elems }, true).Seq()
+    return goiter.SliceSourceElems(func() []T { return l.elems }, true).Seq()
 }
 
 func (l *List[T]) Iter() iter.Seq[T] {
-    return goiter.SliceSourceElem(func() []T { return l.elems }).Seq()
+    return goiter.SliceSourceElems(func() []T { return l.elems }).Seq()
 }
 
 func (l *List[T]) Count() int {

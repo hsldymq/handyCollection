@@ -22,7 +22,7 @@ type sliceIterable[T any] struct {
 }
 
 func (si *sliceIterable[T]) Iter() iter.Seq[T] {
-    return goiter.SliceElem(si.s).Seq()
+    return goiter.SliceElems(si.s).Seq()
 }
 
 type seqIterable[TIter goiter.SeqX[T], T any] struct {

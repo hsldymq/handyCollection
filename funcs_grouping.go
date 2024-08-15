@@ -79,7 +79,7 @@ func GroupJoin[OuterT, InnerT any, K comparable](
             if hasAny {
                 combined := &Joined[OuterT, Enumerable[InnerT]]{
                     Outer: outerElem,
-                    Inner: NewEnumerator(goiter.SliceElem(innerElems)),
+                    Inner: NewEnumerator(goiter.SliceElems(innerElems)),
                 }
                 if !yield(combined) {
                     return
