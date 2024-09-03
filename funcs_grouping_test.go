@@ -16,12 +16,12 @@ func TestJoin(t *testing.T) {
         Major string
     }
 
-    students := NewIterableFromSlice([]student{
+    students := newIterableFromSlice([]student{
         {"1", "Alice"},
         {"2", "Bob"},
         {"3", "Cindy"},
     })
-    majors := NewIterableFromSlice([]studentMajor{
+    majors := newIterableFromSlice([]studentMajor{
         {"1", "Math"},
         {"1", "Physics"},
         {"2", "English"},
@@ -53,7 +53,7 @@ func TestJoin(t *testing.T) {
         t.Fatalf("test Join, expect: %v, actual: %v", expect, actual)
     }
 
-    students = NewIterableFromSlice([]student{})
+    students = newIterableFromSlice([]student{})
     e = Join(students, majors, func(s student) string {
         return s.ID
     }, func(m studentMajor) string {
@@ -79,12 +79,12 @@ func TestJoinAs(t *testing.T) {
         Name  string
         Major string
     }
-    students := NewIterableFromSlice([]student{
+    students := newIterableFromSlice([]student{
         {"1", "Alice"},
         {"2", "Bob"},
         {"3", "Cindy"},
     })
-    majors := NewIterableFromSlice([]studentMajor{
+    majors := newIterableFromSlice([]studentMajor{
         {"1", "Math"},
         {"1", "Physics"},
         {"2", "English"},
@@ -127,12 +127,12 @@ func TestGroupJoin(t *testing.T) {
         Major string
     }
 
-    students := NewIterableFromSlice([]student{
+    students := newIterableFromSlice([]student{
         {"1", "Alice"},
         {"2", "Bob"},
         {"3", "Cindy"},
     })
-    majors := NewIterableFromSlice([]studentMajor{
+    majors := newIterableFromSlice([]studentMajor{
         {"1", "Math"},
         {"1", "Physics"},
         {"2", "English"},
@@ -173,7 +173,7 @@ func TestGroupJoin(t *testing.T) {
         t.Fatalf("test GroupJoin, expect: %v, actual: %v", expect, actual)
     }
 
-    students = NewIterableFromSlice([]student{})
+    students = newIterableFromSlice([]student{})
     e = GroupJoin(students, majors, func(s student) string {
         return s.ID
     }, func(m studentMajor) string {
