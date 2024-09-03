@@ -27,11 +27,3 @@ func TransformExpand[In any, Out any](e Iterable[In], transformer func(In) Itera
     }
     return NewEnumerator(seq)
 }
-
-func ToList[T any](e Iterable[T]) *List[T] {
-    l := NewList[T]()
-    for each := range e.Iter() {
-        l.Add(each)
-    }
-    return l
-}
