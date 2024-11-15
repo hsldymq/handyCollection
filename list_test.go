@@ -123,7 +123,7 @@ func TestList_RemoveAt(t *testing.T) {
 }
 
 func TestList_Pop(t *testing.T) {
-    list := NewListFromIter[int](goiter.Range(1, 3).Seq())
+    list := NewListFromIter(goiter.Range(1, 3))
 
     actual, ok := list.Pop()
     if !ok {

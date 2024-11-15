@@ -19,7 +19,7 @@ func NewList[T any](elems ...T) *List[T] {
     return l
 }
 
-func NewListFromIter[T any](it iter.Seq[T]) *List[T] {
+func NewListFromIter[TIter goiter.SeqX[T], T any](it TIter) *List[T] {
     l := NewList[T]()
     for each := range it {
         l.Add(each)
