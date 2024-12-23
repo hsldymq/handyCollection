@@ -282,6 +282,38 @@ func TestEnumerator_Concat(t *testing.T) {
     }
 }
 
+func TestEnumerator_FirstOrDefault(t *testing.T) {
+    list := NewEnumerator(goiter.SliceElems([]int{1, 2, 3}))
+    actual := list.FirstOrDefault(-1)
+    expect := 1
+    if expect != actual {
+        t.Fatalf("test Enumerator.FirstOrDefault, expect: %d, actual: %d", expect, actual)
+    }
+
+    list = NewEnumerator(goiter.Empty[int]())
+    expect = -1
+    actual = list.FirstOrDefault(-1)
+    if expect != actual {
+        t.Fatalf("test Enumerator.FirstOrDefault expect: %d, actual: %d", expect, actual)
+    }
+}
+
+func TestEnumerator_LastOrDefault(t *testing.T) {
+    list := NewEnumerator(goiter.SliceElems([]int{1, 2, 3}))
+    actual := list.LastOrDefault(-1)
+    expect := 3
+    if expect != actual {
+        t.Fatalf("test Enumerator.LastOrDefault, expect: %d, actual: %d", expect, actual)
+    }
+
+    list = NewEnumerator(goiter.Empty[int]())
+    expect = -1
+    actual = list.LastOrDefault(-1)
+    if expect != actual {
+        t.Fatalf("test Enumerator.LastOrDefault expect: %d, actual: %d", expect, actual)
+    }
+}
+
 func TestEnumerator_OrderBy(t *testing.T) {
     list := NewEnumerator(goiter.SliceElems([]int{3, 2, 1}))
     actual := []int{}

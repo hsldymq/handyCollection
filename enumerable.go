@@ -21,6 +21,10 @@ type Enumerable[T any] interface {
     SequenceEqual(Iterable[T]) bool
     SequenceEqualBy(Iterable[T], func(T) any) bool
     Concat(...Iterable[T]) Enumerable[T]
+    First() (T, bool)
+    FirstOrDefault(T) T
+    Last() (T, bool)
+    LastOrDefault(T) T
     OrderBy(func(T, T) int) Enumerable[T]
 }
 

@@ -330,6 +330,36 @@ func (l *List[T]) OrderBy(cmp func(T, T) int) Enumerable[T] {
     return orderBy(l, cmp)
 }
 
+func (l *List[T]) First() (T, bool) {
+    if len(l.elems) > 0 {
+        return l.elems[0], true
+    }
+    return zVal[T](), false
+}
+
+func (l *List[T]) FirstOrDefault(def T) T {
+    v, hasVal := l.First()
+    if !hasVal {
+        return def
+    }
+    return v
+}
+
+func (l *List[T]) Last() (T, bool) {
+    if len(l.elems) > 0 {
+        return l.elems[len(l.elems)-1], true
+    }
+    return zVal[T](), false
+}
+
+func (l *List[T]) LastOrDefault(def T) T {
+    v, hasVal := l.Last()
+    if !hasVal {
+        return def
+    }
+    return v
+}
+
 func (l *List[T]) actualIndex(idx int) (int, bool) {
     if idx < 0 {
         idx = len(l.elems) + idx

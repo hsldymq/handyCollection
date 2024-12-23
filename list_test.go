@@ -974,6 +974,38 @@ func TestList_Concat(t *testing.T) {
     }
 }
 
+func TestList_FirstOrDefault(t *testing.T) {
+    list := NewList(1, 2, 3)
+    expect := 1
+    actual := list.FirstOrDefault(-1)
+    if expect != actual {
+        t.Fatalf("test List.FirstOrDefault expect: %d, actual: %d", expect, actual)
+    }
+
+    list = NewList[int]()
+    expect = -1
+    actual = list.FirstOrDefault(-1)
+    if expect != actual {
+        t.Fatalf("test List.FirstOrDefault expect: %d, actual: %d", expect, actual)
+    }
+}
+
+func TestList_LastOrDefault(t *testing.T) {
+    list := NewList(1, 2, 3)
+    expect := 3
+    actual := list.LastOrDefault(-1)
+    if expect != actual {
+        t.Fatalf("test List.LastOrDefault expect: %d, actual: %d", expect, actual)
+    }
+
+    list = NewList[int]()
+    expect = -1
+    actual = list.LastOrDefault(-1)
+    if expect != actual {
+        t.Fatalf("test List.LastOrDefault expect: %d, actual: %d", expect, actual)
+    }
+}
+
 func TestList_OrderBy(t *testing.T) {
     type person struct {
         Name string
